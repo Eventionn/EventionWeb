@@ -37,7 +37,11 @@ export default function Leafletmap() {
       doubleClickZoom={false}
       zoomControl={false}
       attributionControl={false}
-      style={{ height: '90vh', width: '100%'}}
+      style={{
+        height: '100vh',      // Alterado para ocupar toda a altura da tela
+        width: '100%',        // Ocupa toda a largura disponível
+        overflow: 'hidden',   // Impede a rolagem horizontal
+      }}
     >
       {geoData && (
         <GeoJSON
