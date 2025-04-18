@@ -16,12 +16,11 @@ export default function AuthLayout({
             {/* <!-- ===== Common Grid Shape Start ===== --> */}
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
-              <p
-                className="text-center text-gray-400 dark:text-white/60 text-3xl"
-                style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
-              >
-                EVENTION
-              </p>
+            <img
+              src="/images/logo/logotipoFinaltranspwhite.svg" 
+              alt="Evention Logo"
+              className="w-100 h-auto" 
+            />
             </div>
           </div>
         </div>
