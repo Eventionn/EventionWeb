@@ -28,6 +28,11 @@ const navItems: NavItem[] = [
     path: "/",
   },
   {
+    icon: <GridIcon />,
+    name: "Overview",
+    path: "/overview",
+  },
+  {
     icon: <UserCircleIcon />,
     name: "Users",
     path: "/p",
