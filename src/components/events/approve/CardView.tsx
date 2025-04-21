@@ -57,14 +57,15 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                             </div>
 
                             <div className="mt-4 flex gap-2">
-                                <button className="flex-1 bg-red-500 text-white text-sm py-2 rounded-lg hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition">
+                                <button className="flex-1 bg-red-100 text-red-700 text-sm py-2 rounded-lg hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:hover:bg-red-800 transition font-medium">
                                     Reject
                                 </button>
 
-                                <button className="flex-1 bg-blue-500 text-white text-sm py-2 rounded-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition">
+                                <button className="flex-1 bg-green-100 text-green-700 text-sm py-2 rounded-lg hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800 transition font-medium">
                                     Approve
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 ))}

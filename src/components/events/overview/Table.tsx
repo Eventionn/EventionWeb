@@ -11,6 +11,11 @@ import { useState } from "react";
 import { MoreDotIcon } from "../../../icons";
 import { Dropdown } from "../../ui/dropdown/Dropdown";
 import { DropdownItem } from "../../ui/dropdown/DropdownItem";
+import { useModal } from "../../../hooks/useModal";
+import { Modal } from "../../ui/modal";
+import Label from "../../form/Label";
+import Input from "../../form/input/InputField";
+import Button from "../../ui/button/Button";
 
 interface Order {
     id: number;
@@ -113,14 +118,63 @@ const tableData: Order[] = [
 ];
 
 export default function EventsTable() {
+    const { isOpen, openModal, closeModal } = useModal();
+    const [eventToDelete, setEventToDelete] = useState<Order | null>(null);
+    const {
+        isOpen: isDeleteModalOpen,
+        openModal: openDeleteModal,
+        closeModal: closeDeleteModal,
+    } = useModal();
     const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-
     const totalPages = Math.ceil(tableData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedData = tableData.slice(startIndex, endIndex);
+
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        bio: ''
+    });
+
+    const handleDeleteClick = (order: Order) => {
+        setEventToDelete(order);
+        openDeleteModal();
+    };
+
+    const handleEditClick = (order: Order) => {
+        setEventToDelete(order);
+        setFormData({
+            firstName: order.user.name.split(" ")[0] || '',
+            lastName: order.user.name.split(" ")[1] || '',
+            email: '',
+            phone: '',
+            bio: order.user.role,
+        });
+        openModal();
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const confirmDelete = () => {
+        console.log("Deleting event:", eventToDelete);
+        closeDeleteModal();
+        setEventToDelete(null);
+    };
+
+    const handleSave = () => {
+        if (eventToDelete) {
+            console.log("Saving changes for:", formData);
+        }
+        closeModal();
+    };
 
     const toggleDropdown = (id: number) => {
         setOpenDropdownId((prev) => (prev === id ? null : id));
@@ -212,16 +266,127 @@ export default function EventsTable() {
                                         onClose={closeDropdown}
                                         className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
                                     >
-
-                                        <DropdownItem onItemClick={closeDropdown} className="px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">Edit</DropdownItem>
-                                        <DropdownItem onItemClick={closeDropdown} className="px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">Delete</DropdownItem>
+                                        <DropdownItem
+                                            onItemClick={() => handleEditClick(order)}
+                                            className="px-3 py-2 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 text-yellow-600 dark:text-yellow-400"
+                                        >
+                                            Edit
+                                        </DropdownItem>
+                                        <DropdownItem
+                                            onItemClick={() => handleDeleteClick(order)}
+                                            className="px-3 py-2 rounded-md hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400"
+                                        >
+                                            Delete
+                                        </DropdownItem>
                                     </Dropdown>
+
+
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </div>
+
+            <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+                <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+                    <div className="px-2 pr-14">
+                        <h4 className="mb-5 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                            Edit Event Information
+                        </h4>
+                    </div>
+                    <form className="flex flex-col">
+                        <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-1">
+
+                            <div>
+
+                                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>First Name</Label>
+                                        <Input
+                                            type="text"
+                                            name="firstName"
+                                            value={formData.firstName}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>Last Name</Label>
+                                        <Input
+                                            type="text"
+                                            name="lastName"
+                                            value={formData.lastName}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>Email Address</Label>
+                                        <Input
+                                            type="text"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>Phone</Label>
+                                        <Input
+                                            type="text"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+
+                                    <div className="col-span-2">
+                                        <Label>Bio</Label>
+                                        <Input
+                                            type="text"
+                                            name="bio"
+                                            value={formData.bio}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                            <Button size="sm" variant="outline" onClick={closeModal}>
+                                Close
+                            </Button>
+                            <Button size="sm" onClick={handleSave}>
+                                Save Changes
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
+            <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} className="max-w-md m-4">
+                <div className="w-full rounded-3xl bg-white p-6 dark:bg-gray-900">
+                    <h4 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+                        Confirm Event Removal
+                    </h4>
+                    <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+                        Are you sure you want to delete the event{" "}
+                        <span className="font-medium text-gray-800 dark:text-white">
+                            {eventToDelete?.projectName}
+                        </span>
+                        ? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end gap-3">
+                        <Button variant="outline" size="sm" onClick={closeDeleteModal}>
+                            Cancel
+                        </Button>
+                        <Button variant='primary' size="sm" onClick={confirmDelete}>
+                            Confirm
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
 
             {/* Paginação */}
             <div className="flex items-center justify-center gap-2 py-4">
