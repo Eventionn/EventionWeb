@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Events",
-    subItems: [{ name: "Overview", path: "/p", pro: false }, { name: "Approve Events", path: "/p", pro: false }],
+    subItems: [{ name: "Overview", path: "/events", pro: false }, { name: "Approve Events", path: "/p", pro: false }],
   },
   {
     name: "User Profile",

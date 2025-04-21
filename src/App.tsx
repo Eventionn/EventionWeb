@@ -19,6 +19,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Overview from "./pages/Dashboard/Overview";
+import EventsOverview from "./pages/Events/Overview";
 
 export default function App() {
   return (
@@ -30,6 +31,8 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
             <Route index path="/overview" element={<Overview />} />
+
+            <Route index path="/events" element={<EventsOverview />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
