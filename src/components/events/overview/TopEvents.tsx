@@ -3,8 +3,8 @@ import {
     ArrowUpIcon,
     CalenderIcon,
     GroupIcon,
-  } from "../../icons";
-  import Badge from "../ui/badge/Badge";
+  } from "../../../icons";
+  import Badge from "../../ui/badge/Badge";
   
   const events = [
     {

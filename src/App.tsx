@@ -20,6 +20,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Overview from "./pages/Dashboard/Overview";
 import EventsOverview from "./pages/Events/Overview";
+import ApproveEvents from "./pages/Events/Approve";
 
 export default function App() {
   return (
@@ -32,7 +33,8 @@ export default function App() {
             <Route index path="/" element={<Home />} />
             <Route index path="/overview" element={<Overview />} />
 
-            <Route index path="/events" element={<EventsOverview />} />
+            <Route path="/events" element={<EventsOverview />} />
+            <Route path="/approve" element={<ApproveEvents />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
