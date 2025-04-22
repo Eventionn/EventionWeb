@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import UserDropdown from "../components/header/UserDropdown";
+import { userMocks } from "../mocks/userMock";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -105,7 +106,7 @@ const AppHeader: React.FC = () => {
           <div className="flex items-center gap-2 2xsm:gap-3">
             <ThemeToggleButton />
           </div>
-          <UserDropdown />
+          <UserDropdown data={userMocks}/>
         </div>
       </div>
     </header>
