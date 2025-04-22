@@ -31,8 +31,8 @@ export default function App() {
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
-            <Route index path="/overview" element={<Overview />} />
+            <Route path="/overview" element={<Home />} />
+            <Route index path="/" element={<Overview />} />
 
             <Route path="/events" element={<EventsOverview />} />
             <Route path="/approve" element={<ApproveEvents />} />

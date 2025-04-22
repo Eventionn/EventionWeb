@@ -24,13 +24,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/",
-  },
-  {
-    icon: <GridIcon />,
     name: "Overview",
-    path: "/overview",
+    path: "/",
   },
   {
     icon: <UserCircleIcon />,
@@ -41,6 +36,11 @@ const navItems: NavItem[] = [
     icon: <CalenderIcon />,
     name: "Events",
     subItems: [{ name: "Overview", path: "/events", pro: false }, { name: "Approve Events", path: "/approve", pro: false }],
+  },  
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/overview",
   },
   {
     name: "User Profile",

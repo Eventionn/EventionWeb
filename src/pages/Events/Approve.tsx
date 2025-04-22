@@ -10,7 +10,12 @@ export default function ApproveEvents() {
 
     return (
         <>
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between mb-4">
+                <div>
+                    <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                        Approve Events
+                    </h1>
+                </div>
                 <div className="inline-flex items-center gap-1 rounded-md border p-1 dark:border-white/10">
                     <button
                         onClick={() => setViewType("table")}
