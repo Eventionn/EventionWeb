@@ -35,7 +35,7 @@ export const userMocks: User[] = [
       roadNumber: 100,
       postCode: "12345-678",
       NIF: "123456789",
-      localtown_id: "local-1"
+      localtown_id: "Braga"
     },
     profilePicture: "images/user/user-01.jpg"
   },
