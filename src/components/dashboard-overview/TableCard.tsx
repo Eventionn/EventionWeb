@@ -36,8 +36,6 @@ const TableCard: React.FC<ComponentCardProps> = ({
         </div>
       </div>
 
-
-      {/* Card Body */}
       <div className="border-t border-gray-100 dark:border-gray-800">
         <div>{children}</div>
       </div>

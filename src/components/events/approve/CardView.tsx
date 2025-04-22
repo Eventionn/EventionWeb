@@ -1,18 +1,8 @@
 import { useState } from "react";
-
-interface Order {
-    id: number;
-    user: {
-        image: string;
-        name: string;
-        role: string;
-    };
-    projectName: string;
-    status: string;
-}
+import { Event } from "../../../types/Event";
 
 interface ApproveEventsTableProps {
-    tableData: Order[];
+    tableData: Event[];
 }
 
 export default function ApproveEventsCardView({ tableData }: ApproveEventsTableProps) {
@@ -33,15 +23,15 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedData.map((item) => (
+                {paginatedData.map((event) => (
                     <div
-                        key={item.id}
+                        key={event.eventID}
                         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl shadow overflow-hidden flex flex-col h-full"
                     >
                         <div className="w-full h-35 overflow-hidden">
                             <img
-                                src={item.user.image}
-                                alt={item.user.name}
+                                src={event.eventPicture}
+                                alt={event.name}
                                 className="object-cover w-full h-full"
                             />
                         </div>
@@ -49,10 +39,10 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                         <div className="p-4 flex flex-col justify-between flex-1 h-full">
                             <div className="text-start flex-1">
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                    {item.user.name}
+                                    {event.name}
                                 </h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                                    {item.user.role}
+                                    {event.description}
                                 </p>
                             </div>
 

@@ -6,7 +6,6 @@ import {
     TableRow,
 } from "../../ui/table";
 
-import Badge from "../../ui/badge/Badge";
 import { useState } from "react";
 import { MoreDotIcon } from "../../../icons";
 import { Dropdown } from "../../ui/dropdown/Dropdown";
@@ -16,151 +15,85 @@ import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import Button from "../../ui/button/Button";
+import { Event } from "../../../types/Event";
+import Badge from "../../ui/badge/Badge";
 
-interface Order {
-    id: number;
-    user: {
-        image: string;
-        name: string;
-        role: string;
-    };
-    projectName: string;
-    team: {
-        images: string[];
-    };
-    status: string;
-    budget: string;
+interface EventsTableProps {
+    data: Event[];
 }
 
-const tableData: Order[] = [
-    {
-        id: 1,
-        user: {
-            image: "/images/user/user-17.jpg",
-            name: "Lindsey Curtis",
-            role: "Web Designer",
-        },
-        projectName: "Agency Website",
-        team: {
-            images: [
-                "/images/user/user-22.jpg",
-                "/images/user/user-23.jpg",
-                "/images/user/user-24.jpg",
-            ],
-        },
-        budget: "3.9K",
-        status: "Active",
-    },
-    {
-        id: 2,
-        user: {
-            image: "/images/user/user-18.jpg",
-            name: "Kaiya George",
-            role: "Project Manager",
-        },
-        projectName: "Technology",
-        team: {
-            images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
-        },
-        budget: "24.9K",
-        status: "Pending",
-    },
-    {
-        id: 3,
-        user: {
-            image: "/images/user/user-17.jpg",
-            name: "Zain Geidt",
-            role: "Content Writing",
-        },
-        projectName: "Blog Writing",
-        team: {
-            images: ["/images/user/user-27.jpg"],
-        },
-        budget: "12.7K",
-        status: "Active",
-    },
-    {
-        id: 4,
-        user: {
-            image: "/images/user/user-20.jpg",
-            name: "Abram Schleifer",
-            role: "Digital Marketer",
-        },
-        projectName: "Social Media",
-        team: {
-            images: [
-                "/images/user/user-28.jpg",
-                "/images/user/user-29.jpg",
-                "/images/user/user-30.jpg",
-            ],
-        },
-        budget: "2.8K",
-        status: "Cancel",
-    },
-    {
-        id: 5,
-        user: {
-            image: "/images/user/user-21.jpg",
-            name: "Carla George",
-            role: "Front-end Developer",
-        },
-        projectName: "Website",
-        team: {
-            images: [
-                "/images/user/user-31.jpg",
-                "/images/user/user-32.jpg",
-                "/images/user/user-33.jpg",
-            ],
-        },
-        budget: "4.5K",
-        status: "Active",
-    }
-];
-
-export default function EventsTable() {
+export default function EventsTable({ data }: EventsTableProps) {
+    const tableData = data.filter((event) => event.eventStatus.status === "Completo" || event.eventStatus.status === "Aprovado" || event.eventStatus.status === "Completo");
     const { isOpen, openModal, closeModal } = useModal();
-    const [eventToDelete, setEventToDelete] = useState<Order | null>(null);
+    const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
     const {
         isOpen: isDeleteModalOpen,
         openModal: openDeleteModal,
         closeModal: closeDeleteModal,
     } = useModal();
-    const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+    const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const totalPages = Math.ceil(tableData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedData = tableData.slice(startIndex, endIndex);
-
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        bio: ''
+        name: '',
+        description: '',
+        startAt: new Date(),
+        endAt: new Date(),
+        price: 0,
+        address: {
+            road: '',
+            roadNumber: 0,
+            postCode: '',
+            localtown: '',
+        },
+        eventPicture: '',
+        eventStatus: '',
     });
 
-    const handleDeleteClick = (order: Order) => {
+    const handleDeleteClick = (order: Event) => {
         setEventToDelete(order);
         openDeleteModal();
     };
 
-    const handleEditClick = (order: Order) => {
-        setEventToDelete(order);
+    function formatLocalDateTime(date: Date): string {
+        const offset = date.getTimezoneOffset(); // minutos de diferença para UTC
+        const localDate = new Date(date.getTime() - offset * 60000); // ajusta para hora local
+        return localDate.toISOString().slice(0, 16); // formato para datetime-local
+    }
+
+    const handleEditClick = (event: Event) => {
+        setEventToDelete(event);
+
         setFormData({
-            firstName: order.user.name.split(" ")[0] || '',
-            lastName: order.user.name.split(" ")[1] || '',
-            email: '',
-            phone: '',
-            bio: order.user.role,
+            name: event.name,
+            description: event.description,
+            startAt: event.startAt,
+            endAt: event.endAt,
+            price: event.price,
+            address: {
+                road: event.addressEvents.road,
+                roadNumber: event.addressEvents.roadNumber,
+                postCode: event.addressEvents.postCode,
+                localtown: event.addressEvents.localtown,
+            },
+            eventPicture: event.eventPicture || '',
+            eventStatus: event.eventStatus.status,
         });
+
         openModal();
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === "startAt" || name === "endAt" ? new Date(value) : value,
+        }));
     };
 
     const confirmDelete = () => {
@@ -176,7 +109,7 @@ export default function EventsTable() {
         closeModal();
     };
 
-    const toggleDropdown = (id: number) => {
+    const toggleDropdown = (id: string) => {
         setOpenDropdownId((prev) => (prev === id ? null : id));
     };
 
@@ -196,84 +129,97 @@ export default function EventsTable() {
                 <Table>
                     <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                         <TableRow>
-                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">User</TableCell>
-                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Project Name</TableCell>
-                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Team</TableCell>
+                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Event</TableCell>
+                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Start</TableCell>
+                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">End</TableCell>
+                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Price</TableCell>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Status</TableCell>
-                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Budget</TableCell>
                         </TableRow>
                     </TableHeader>
 
                     <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                        {paginatedData.map((order) => (
-                            <TableRow key={order.id}>
+                        {paginatedData.map((event) => (
+                            <TableRow key={event.eventID}>
                                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 overflow-hidden rounded-full">
-                                            <img src={order.user.image} alt={order.user.name} width={40} height={40} />
+                                            <img
+                                                src={event.eventPicture}
+                                                alt={event.name}
+                                                width={40}
+                                                height={40}
+                                                className="object-cover object-center w-full h-full"
+                                            />
                                         </div>
                                         <div>
                                             <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                                {order.user.name}
-                                            </span>
-                                            <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                                                {order.user.role}
+                                                {event.name}
                                             </span>
                                         </div>
                                     </div>
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {order.projectName}
+                                    {event.startAt.toLocaleDateString("pt-PT", {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: false,
+                                    })}
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    <div className="flex -space-x-2">
-                                        {order.team.images.map((teamImage, index) => (
-                                            <div key={index} className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900">
-                                                <img src={teamImage} alt={`Team member ${index + 1}`} className="w-full size-6" />
-                                            </div>
-                                        ))}
-                                    </div>
+                                    {event.endAt.toLocaleDateString("pt-PT", {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: false,
+                                    })}
+                                </TableCell>
+
+
+                                <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                                    {event.price > 0 ? event.price + ' €' : 'Free'}
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                     <Badge
                                         size="sm"
                                         color={
-                                            order.status === "Active"
+                                            event.eventStatus.status === "Completo"
                                                 ? "success"
-                                                : order.status === "Pending"
-                                                    ? "warning"
+                                                : event.eventStatus.status === "Aprovado"
+                                                    ? "primary"
                                                     : "error"
                                         }
                                     >
-                                        {order.status}
+                                        {event.eventStatus.status}
                                     </Badge>
                                 </TableCell>
 
-                                <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {order.budget}
-                                </TableCell>
 
                                 <TableCell className="relative">
-                                    <button className="dropdown-toggle" onClick={() => toggleDropdown(order.id)}>
+                                    <button className="dropdown-toggle" onClick={() => toggleDropdown(event.eventID)}>
                                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 size-6" />
                                     </button>
 
                                     <Dropdown
-                                        isOpen={openDropdownId === order.id}
+                                        isOpen={openDropdownId === event.eventID}
                                         onClose={closeDropdown}
                                         className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
                                     >
                                         <DropdownItem
-                                            onItemClick={() => handleEditClick(order)}
+                                            onItemClick={() => handleEditClick(event)}
                                             className="px-3 py-2 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 text-yellow-600 dark:text-yellow-400"
                                         >
                                             Edit
                                         </DropdownItem>
                                         <DropdownItem
-                                            onItemClick={() => handleDeleteClick(order)}
+                                            onItemClick={() => handleDeleteClick(event)}
                                             className="px-3 py-2 rounded-md hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400"
                                         >
                                             Delete
@@ -297,56 +243,71 @@ export default function EventsTable() {
                     </div>
                     <form className="flex flex-col">
                         <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-1">
-
                             <div>
-
                                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                     <div className="col-span-2 lg:col-span-1">
-                                        <Label>First Name</Label>
+                                        <Label>Event Name</Label>
                                         <Input
                                             type="text"
                                             name="firstName"
-                                            value={formData.firstName}
+                                            value={formData.name}
                                             onChange={handleInputChange}
                                         />
                                     </div>
 
                                     <div className="col-span-2 lg:col-span-1">
-                                        <Label>Last Name</Label>
+                                        <Label>Status</Label>
+                                        <select
+                                            name="eventStatus"
+                                            value={formData.eventStatus}
+                                            onChange={handleInputChange}
+                                            className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90"
+                                        >
+                                            <option value="Pendente">Pendente</option>
+                                            <option value="Aprovado">Aprovado</option>
+                                            <option value="Completo">Completo</option>
+                                            <option value="Completo">Avaliado</option>
+                                            <option value="Completo">Cancelado</option>
+                                        </select>
+
+                                    </div>
+
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>Start</Label>
                                         <Input
-                                            type="text"
-                                            name="lastName"
-                                            value={formData.lastName}
+                                            type="datetime-local"
+                                            name="startAt"
+                                            value={formatLocalDateTime(formData.startAt)}
                                             onChange={handleInputChange}
                                         />
                                     </div>
 
                                     <div className="col-span-2 lg:col-span-1">
-                                        <Label>Email Address</Label>
+                                        <Label>End</Label>
                                         <Input
-                                            type="text"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-
-                                    <div className="col-span-2 lg:col-span-1">
-                                        <Label>Phone</Label>
-                                        <Input
-                                            type="text"
-                                            name="phone"
-                                            value={formData.phone}
+                                            type="datetime-local"
+                                            name="startAt"
+                                            value={formatLocalDateTime(formData.startAt)}
                                             onChange={handleInputChange}
                                         />
                                     </div>
 
                                     <div className="col-span-2">
-                                        <Label>Bio</Label>
+                                        <Label>Description</Label>
+                                        <textarea
+                                            rows={4}
+                                            name="description"
+                                            value={formData.description}
+                                            onChange={handleInputChange}
+                                            className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 h-32 resize-y"
+                                        />
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1">
+                                        <Label>Price</Label>
                                         <Input
-                                            type="text"
-                                            name="bio"
-                                            value={formData.bio}
+                                            type="number"
+                                            name="price"
+                                            value={formData.price}
                                             onChange={handleInputChange}
                                         />
                                     </div>
@@ -361,6 +322,8 @@ export default function EventsTable() {
                                 Save Changes
                             </Button>
                         </div>
+
+
                     </form>
                 </div>
             </Modal>
@@ -373,7 +336,7 @@ export default function EventsTable() {
                     <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
                         Are you sure you want to delete the event{" "}
                         <span className="font-medium text-gray-800 dark:text-white">
-                            {eventToDelete?.projectName}
+                            {eventToDelete?.name}
                         </span>
                         ? This action cannot be undone.
                     </p>
