@@ -5,14 +5,17 @@ import {
   GroupIcon,
 } from "../../icons";
 import { Event } from "../../types/Event";
+import { User } from "../../types/User";
 import Badge from "../ui/badge/Badge";
 
 interface OverallMetricsProps {
   data: Event[];
+  users: User[];
 }
 
-export default function OverallMetrics({ data }: OverallMetricsProps) {
+export default function OverallMetrics({ data, users }: OverallMetricsProps) {
 
+  const activeUsers = users.filter((user) => user.status === true).length;
   const numberofEvents = data.length;
   const pendingEvents = data.filter((event) => event.eventStatus.status === "Pendente").length;
 
@@ -29,7 +32,7 @@ export default function OverallMetrics({ data }: OverallMetricsProps) {
               Users
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              ---
+              {activeUsers}
             </h4>
           </div>
           <Badge color="success">

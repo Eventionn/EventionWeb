@@ -5,6 +5,7 @@ import EventsTable from "../../components/dashboard-overview/EventsTable";
 import TableCard from "../../components/dashboard-overview/TableCard";
 import MapCard from "../../components/dashboard-overview/MapCard";
 import { eventMocks } from "../../mocks/eventMock";
+import { userMocks } from "../../mocks/userMock";
 
 export default function Overview() {
 
@@ -12,14 +13,14 @@ export default function Overview() {
         <>
             <div className="grid grid-cols-12 gap-4 md:gap-6">
                 <div className="col-span-12 space-y-6 xl:col-span-12">
-                    <OverallMetrics data={eventMocks} />
+                    <OverallMetrics data={eventMocks} users={userMocks} />
                 </div>
                 <div className="col-span-12">
                     <MonthlyRevenue />
                 </div>
                 <div className="col-span-12 xl:col-span-6">
                     <TableCard title="Users" path="/users">
-                        <UsersTable />
+                        <UsersTable data={userMocks} />
                     </TableCard>
                 </div>
                 <div className="col-span-12 xl:col-span-6">

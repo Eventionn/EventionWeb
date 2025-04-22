@@ -1,5 +1,10 @@
-  
-  export default function TopUsersMetrics() {
+import { User } from "../../types/User";
+
+interface TopUsersProps {
+  data:User[];
+}
+
+export default function TopUsersMetrics({ data }: TopUsersProps) {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
 

@@ -5,209 +5,265 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-
+import { useModal } from "../../hooks/useModal";
+import { Dropdown } from "../ui/dropdown/Dropdown";
+import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { MoreDotIcon } from "../../icons";
 import Badge from "../ui/badge/Badge";
+import { User } from "../../types/User";
+import { useState } from "react";
+import { Modal } from "../ui/modal";
+import Input from "../form/input/InputField";
+import Label from "../form/Label";
+import Button from "../ui/button/Button";
 
-interface Order {
-  id: number;
-  user: {
-    image: string;
-    name: string;
-    role: string;
-  };
-  projectName: string;
-  team: {
-    images: string[];
-  };
-  events: string;
-  status: string;
-  budget: string;
+interface UsersTableOverviewProps {
+  data: User[];
 }
 
-// Define the table data using the interface
-const tableData: Order[] = [
-  {
-    id: 1,
-    user: {
-      image: "/images/user/user-17.jpg",
-      name: "Lindsey Curtis",
-      role: "Web Designer",
-    },
-    projectName: "Agency Website",
-    team: {
-      images: [
-        "/images/user/user-22.jpg",
-        "/images/user/user-23.jpg",
-        "/images/user/user-24.jpg",
-      ],
-    },
-    budget: "3.9K",
-    events: "12",
-    status: "Active",
-  },
-  {
-    id: 2,
-    user: {
-      image: "/images/user/user-18.jpg",
-      name: "Kaiya George",
-      role: "Project Manager",
-    },
-    projectName: "Technology",
-    team: {
-      images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
-    },
-    budget: "24.9K",
-    events: "13",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    user: {
-      image: "/images/user/user-17.jpg",
-      name: "Zain Geidt",
-      role: "Content Writing",
-    },
-    projectName: "Blog Writing",
-    team: {
-      images: ["/images/user/user-27.jpg"],
-    },
-    budget: "12.7K",
-    events: "1",
-    status: "Active",
-  },
-  {
-    id: 4,
-    user: {
-      image: "/images/user/user-20.jpg",
-      name: "Abram Schleifer",
-      role: "Digital Marketer",
-    },
-    projectName: "Social Media",
-    team: {
-      images: [
-        "/images/user/user-28.jpg",
-        "/images/user/user-29.jpg",
-        "/images/user/user-30.jpg",
-      ],
-    },
-    budget: "2.8K",
-    events: "45",
-    status: "Banned",
-  },
-  {
-    id: 5,
-    user: {
-      image: "/images/user/user-21.jpg",
-      name: "Carla George",
-      role: "Front-end Developer",
-    },
-    projectName: "Website",
-    team: {
-      images: [
-        "/images/user/user-31.jpg",
-        "/images/user/user-32.jpg",
-        "/images/user/user-33.jpg",
-      ],
-    },
-    budget: "4.5K",
-    events: "102",
-    status: "Active",
-  },
-];
+export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [, setUserToEdit] = useState<User | null>(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: 0,
+    status: true,
+  });
 
-export default function UsersTableOverview() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+
+  const {
+    isOpen: isEditModalOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  const handleEditClick = (user: User) => {
+    setUserToEdit(user);
+    setFormData({
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      status: user.status,
+    });
+    openEditModal();
+  };
+
+  const handleDeleteClick = (user: User) => {
+    setUserToDelete(user);
+    openDeleteModal();
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "status" ? value === "true" : value,
+    }));
+  };
+
+  const toggleDropdown = (id: string) => {
+    setOpenDropdownId((prev) => (prev === id ? null : id));
+  };
+
+  const closeDropdown = () => {
+    setOpenDropdownId(null);
+  };
+
+  const handleSave = () => {
+    console.log("Saving user:", formData);
+    closeEditModal();
+  };
+
+  const confirmDelete = () => {
+    console.log("Deleting user:", userToDelete);
+    closeDeleteModal();
+    setUserToDelete(null);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
       <div className="max-w-full overflow-x-auto">
         <Table>
-          {/* Table Header */}
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
             <TableRow>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
                 User
               </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
                 Status
               </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Most Profitable Event
+              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
+                Email
               </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Events
+              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
+                Phone
               </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Generated Value
-              </TableCell>
+              <TableCell isHeader children={undefined} />
             </TableRow>
           </TableHeader>
-
-          {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {tableData.map((order) => (
-              <TableRow key={order.id}>
+            {paginatedData.map((user) => (
+              <TableRow key={user.userID}>
                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
-                      <img
-                        width={40}
-                        height={40}
-                        src={order.user.image}
-                        alt={order.user.name}
-                      />
+                      <img src={user.profilePicture} alt={user.username} />
                     </div>
                     <div>
                       <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {order.user.name}
+                        {user.username}
                       </span>
                       <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                        {order.user.role}
+                        {user.userType.type}
                       </span>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <Badge
-                    size="sm"
-                    color={
-                      order.status === "Active"
-                        ? "success"
-                        : order.status === "Pending"
-                        ? "warning"
-                        : "error"
-                    }
-                  >
-                    {order.status}
+                <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
+                  <Badge size="sm" color={user.status ? "success" : "error"}>
+                    {user.status ? "Active" : "Inactive"}
                   </Badge>
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {order.projectName}
+                <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
+                  {user.email}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {order.events}
+                <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
+                  {user.phone}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {order.budget}
+                <TableCell className="relative">
+                  <button className="dropdown-toggle" onClick={() => toggleDropdown(user.userID)}>
+                    <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 size-6" />
+                  </button>
+                  <Dropdown
+                    isOpen={openDropdownId === user.userID}
+                    onClose={closeDropdown}
+                    className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
+                  >
+                    <DropdownItem
+                      onItemClick={() => handleEditClick(user)}
+                      className="px-3 py-2 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 text-yellow-600 dark:text-yellow-400"
+                    >
+                      Edit
+                    </DropdownItem>
+                    <DropdownItem
+                      onItemClick={() => handleDeleteClick(user)}
+                      className="px-3 py-2 rounded-md hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400"
+                    >
+                      Delete
+                    </DropdownItem>
+                  </Dropdown>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-center gap-2 py-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+        >
+          Back
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePageChange(i + 1)}
+            className={`px-3 py-1 rounded-md text-sm border ${
+              currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""
+            } text-theme-sm dark:text-gray-400`}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Edit Modal */}
+      <Modal isOpen={isEditModalOpen} onClose={closeEditModal} className="max-w-md m-4">
+        <div className="rounded-3xl bg-white p-6 dark:bg-gray-900">
+          <h4 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">Edit User</h4>
+          <form className="space-y-4">
+            <div>
+              <Label>Username</Label>
+              <Input name="username" value={formData.username} onChange={handleInputChange} />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input name="email" type="email" value={formData.email} onChange={handleInputChange} />
+            </div>
+            <div>
+              <Label>Phone</Label>
+              <Input name="phone" value={formData.phone} onChange={handleInputChange} />
+            </div>
+            <div>
+              <Label>Status</Label>
+              <select
+                name="status"
+                value={formData.status.toString()}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90"
+              >
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" size="sm" onClick={closeEditModal}>Cancel</Button>
+              <Button size="sm" onClick={handleSave}>Save</Button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
+      {/* Delete Modal */}
+      <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} className="max-w-md m-4">
+        <div className="rounded-3xl bg-white p-6 dark:bg-gray-900">
+          <h4 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">Confirm User Removal</h4>
+          <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+            Are you sure you want to delete{" "}
+            <span className="font-medium text-gray-800 dark:text-white">
+              {userToDelete?.username}
+            </span>
+            ? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" size="sm" onClick={closeDeleteModal}>Cancel</Button>
+            <Button variant="primary" size="sm" onClick={confirmDelete}>Confirm</Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
