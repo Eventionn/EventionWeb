@@ -27,5 +27,5 @@
 # Instala as dependências
 npm install
 
-# Instala as dependências
+# Compilar o dashboard
 npm run dev
