@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 - Gestão de eventos
 - Visualização em tempo real do calendário de eventos
@@ -13,7 +13,7 @@
 
 ---
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 - [React](https://reactjs.org/)
 - [Vite]
@@ -21,11 +21,11 @@
 
 ---
 
-## 📦 Instalação
+## Instalação
 
 ```bash
 # Instala as dependências
 npm install
 
-# Compilar o dashboard
+# Compila o dashboard
 npm run dev
