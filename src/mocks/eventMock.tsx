@@ -1,4 +1,3 @@
-import { AddressEvent } from "../types/AddressEvent";
 import { Event } from "../types/Event";
 import { EventStatus } from "../types/EventStatus";
 
@@ -8,26 +7,17 @@ const eventStatuses: EventStatus[] = [
   { eventStatusID: "status-002", status: "Completo" },
 ];
 
-const addresses: AddressEvent[] = [
-  { addressEstablishmentID: "addr-001", road: "Rua das Flores", roadNumber: 12, postCode: "1000-001", localtown: "Lisboa" },
-  { addressEstablishmentID: "addr-002", road: "Av. Liberdade", roadNumber: 45, postCode: "1100-002", localtown: "Porto" },
-  { addressEstablishmentID: "addr-003", road: "Rua da Alegria", roadNumber: 87, postCode: "4000-003", localtown: "Coimbra" },
-  { addressEstablishmentID: "addr-004", road: "Rua do Sol", roadNumber: 20, postCode: "3000-004", localtown: "Faro" },
-  { addressEstablishmentID: "addr-005", road: "Praça Velha", roadNumber: 5, postCode: "2000-005", localtown: "Braga" },
-];
-
 export const eventMocks: Event[] = [
   {
     eventID: "ev-001",
     userId: "user-001",
     name: "Concerto de Verão",
     description: "Um concerto ao ar livre com bandas locais.",
-    startAt: new Date("2025-06-15T18:00:00"),
-    endAt: new Date("2025-06-15T23:00:00"),
+    startAt: "2025-06-15T18:00:00",
+    endAt: "2025-06-15T23:00:00",
     price: 25,
     createdAt: new Date(),
     eventStatus: eventStatuses[1],
-    addressEvents: addresses[0],
     eventPicture: "/images/event/event-1.jpg",
   },
   {
@@ -35,12 +25,11 @@ export const eventMocks: Event[] = [
     userId: "user-002",
     name: "Feira de Gastronomia",
     description: "Comidas regionais e showcookings com chefs famosos.",
-    startAt: new Date("2025-07-01T10:00:00"),
-    endAt: new Date("2025-07-01T18:00:00"),
+    startAt: "2025-07-01T10:00:00",
+    endAt: "2025-07-01T18:00:00",
     price: 10,
     createdAt: new Date(),
     eventStatus: eventStatuses[0],
-    addressEvents: addresses[1],
     eventPicture: "/images/event/event-2.jpg",
   },
   {
@@ -48,12 +37,11 @@ export const eventMocks: Event[] = [
     userId: "user-003",
     name: "Festival de Cinema",
     description: "Exibição de filmes clássicos ao ar livre.",
-    startAt: new Date("2025-08-10T21:00:00"),
-    endAt: new Date("2025-08-10T23:59:00"),
+    startAt: "2025-08-10T21:00:00",
+    endAt: "2025-08-10T23:59:00",
     price: 0,
     createdAt: new Date(),
     eventStatus: eventStatuses[2],
-    addressEvents: addresses[2],
     eventPicture: "/images/event/event-3.jpg",
   },
   {
@@ -61,12 +49,11 @@ export const eventMocks: Event[] = [
     userId: "user-004",
     name: "Workshop de Fotografia",
     description: "Aprende técnicas de fotografia urbana com profissionais.",
-    startAt: new Date("2025-05-20T09:00:00"),
-    endAt: new Date("2025-05-20T17:00:00"),
+    startAt: "2025-05-20T09:00:00",
+    endAt: "2025-05-20T17:00:00",
     price: 50,
     createdAt: new Date(),
     eventStatus: eventStatuses[0],
-    addressEvents: addresses[3],
     eventPicture: "/images/event/event-4.jpg",
   },
   {
@@ -74,12 +61,11 @@ export const eventMocks: Event[] = [
     userId: "user-005",
     name: "Corrida Solidária",
     description: "Evento desportivo para angariação de fundos.",
-    startAt: new Date("2025-09-01T07:00:00"),
-    endAt: new Date("2025-09-01T12:00:00"),
+    startAt: "2025-09-01T07:00:00",
+    endAt: "2025-09-01T12:00:00",
     price: 5,
     createdAt: new Date(),
     eventStatus: eventStatuses[1],
-    addressEvents: addresses[4],
     eventPicture: "/images/event/event-5.jpg",
   },
   {
@@ -87,12 +73,11 @@ export const eventMocks: Event[] = [
     userId: "user-006",
     name: "Festival de Jazz",
     description: "Vários artistas internacionais num só palco.",
-    startAt: new Date("2025-07-10T19:00:00"),
-    endAt: new Date("2025-07-12T23:00:00"),
+    startAt: "2025-07-10T19:00:00",
+    endAt: "2025-07-12T23:00:00",
     price: 35,
     createdAt: new Date(),
     eventStatus: eventStatuses[0],
-    addressEvents: addresses[0],
     eventPicture: "/images/event/event-6.jpg",
   },
   {
@@ -100,12 +85,11 @@ export const eventMocks: Event[] = [
     userId: "user-007",
     name: "Encontro de Startups",
     description: "Networking entre empreendedores e investidores.",
-    startAt: new Date("2025-10-05T09:30:00"),
-    endAt: new Date("2025-10-05T17:30:00"),
+    startAt: "2025-10-05T09:30:00",
+    endAt: "2025-10-05T17:30:00",
     price: 15,
     createdAt: new Date(),
     eventStatus: eventStatuses[1],
-    addressEvents: addresses[1],
     eventPicture: "/images/event/event-7.jpg",
   },
   {
@@ -113,12 +97,11 @@ export const eventMocks: Event[] = [
     userId: "user-008",
     name: "Aula de Yoga ao Pôr do Sol",
     description: "Relaxamento e meditação na praia.",
-    startAt: new Date("2025-08-20T19:00:00"),
-    endAt: new Date("2025-08-20T20:30:00"),
+    startAt: "2025-08-20T19:00:00",
+    endAt: "2025-08-20T20:30:00",
     price: 8,
     createdAt: new Date(),
     eventStatus: eventStatuses[1],
-    addressEvents: addresses[3],
     eventPicture: "/images/event/event-8.jpg",
   },
   {
@@ -126,12 +109,11 @@ export const eventMocks: Event[] = [
     userId: "user-009",
     name: "Mostra de Artesanato",
     description: "Peças únicas feitas à mão por artesãos locais.",
-    startAt: new Date("2025-06-05T10:00:00"),
-    endAt: new Date("2025-06-05T18:00:00"),
+    startAt: "2025-06-05T10:00:00",
+    endAt: "2025-06-05T18:00:00",
     price: 3,
     createdAt: new Date(),
     eventStatus: eventStatuses[2],
-    addressEvents: addresses[2],
     eventPicture: "/images/event/event-9.jpg",
   },
   {
@@ -139,12 +121,11 @@ export const eventMocks: Event[] = [
     userId: "user-010",
     name: "Hackathon Universitário",
     description: "24h de programação para resolver desafios reais.",
-    startAt: new Date("2025-11-01T08:00:00"),
-    endAt: new Date("2025-11-02T08:00:00"),
+    startAt: "2025-11-01T08:00:00",
+    endAt: "2025-11-02T08:00:00",
     price: 0,
     createdAt: new Date(),
     eventStatus: eventStatuses[2],
-    addressEvents: addresses[4],
     eventPicture: "/images/event/event-10.jpg",
   }
 ];
