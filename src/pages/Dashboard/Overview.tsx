@@ -6,14 +6,19 @@ import TableCard from "../../components/dashboard-overview/TableCard";
 import MapCard from "../../components/dashboard-overview/MapCard";
 import { eventMocks } from "../../mocks/eventMock";
 import { userMocks } from "../../mocks/userMock";
+import { useEvents } from "../../api/event";
+import { useUsers } from "../../api/user";
 
 export default function Overview() {
+
+    const { data, isPending, isError } = useEvents();
+    const { data: users, isPending: isPendingUsers, isError:isErrorUsers } = useUsers();
 
     return (
         <>
             <div className="grid grid-cols-12 gap-4 md:gap-6">
                 <div className="col-span-12 space-y-6 xl:col-span-12">
-                    <OverallMetrics data={eventMocks} users={userMocks} />
+                    <OverallMetrics data={isPending || isError || !data ? null : data} users={isPending || isError || !users ? null : users} />
                 </div>
                 <div className="col-span-12">
                     <MonthlyRevenue />

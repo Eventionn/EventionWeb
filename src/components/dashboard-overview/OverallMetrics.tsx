@@ -6,11 +6,27 @@ import { Event } from "../../types/Event";
 import { User } from "../../types/User";
 
 interface OverallMetricsProps {
-  data: Event[];
-  users: User[];
+  data: Event[] | null;
+  users: User[] | null;
 }
 
-export default function OverallMetrics({ data, users }: OverallMetricsProps) {
+export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
+
+  if (!data) {
+    return (
+      <div className="flex justify-center items-center h-[200px]">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!users) {
+    return (
+      <div className="flex justify-center items-center h-[200px]">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const activeUsers = users.filter((user) => user.status === true).length;
   const numberofEvents = data.length;
