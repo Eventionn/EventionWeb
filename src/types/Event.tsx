@@ -6,11 +6,11 @@ export interface Event {
     userId: string;
     name: string;
     description: string;
-    startAt: Date;
-    endAt: Date;
+    startAt: string;
+    endAt: string;
     price: number;
     createdAt: Date;
     eventStatus: EventStatus;
-    addressEvents: AddressEvent;
+    addressEvents: AddressEvent[];
     eventPicture?: string;
 }

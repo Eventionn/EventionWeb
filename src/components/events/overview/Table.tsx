@@ -17,13 +17,14 @@ import Input from "../../form/input/InputField";
 import Button from "../../ui/button/Button";
 import { Event } from "../../../types/Event";
 import Badge from "../../ui/badge/Badge";
+import { EditEventData, useDeleteEvent, useEditEvent } from "../../../api/event";
 
 interface EventsTableProps {
     data: Event[];
 }
 
 export default function EventsTable({ data }: EventsTableProps) {
-    const tableData = data.filter((event) => event.eventStatus.status === "Completo" || event.eventStatus.status === "Aprovado" || event.eventStatus.status === "Completo");
+    const tableData = data.filter((event) => event.eventStatus.status !== "Pendente");
     const { isOpen, openModal, closeModal } = useModal();
     const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
     const {
@@ -31,6 +32,8 @@ export default function EventsTable({ data }: EventsTableProps) {
         openModal: openDeleteModal,
         closeModal: closeDeleteModal,
     } = useModal();
+    const { mutate: editEvent } = useEditEvent();
+    const { mutate: deleteEvent} = useDeleteEvent();
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -38,20 +41,12 @@ export default function EventsTable({ data }: EventsTableProps) {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedData = tableData.slice(startIndex, endIndex);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<EditEventData>({
         name: '',
         description: '',
-        startAt: new Date(),
-        endAt: new Date(),
+        startAt: '',
+        endAt: '',
         price: 0,
-        address: {
-            road: '',
-            roadNumber: 0,
-            postCode: '',
-            localtown: '',
-        },
-        eventPicture: '',
-        eventStatus: '',
     });
 
     const handleDeleteClick = (order: Event) => {
@@ -59,10 +54,27 @@ export default function EventsTable({ data }: EventsTableProps) {
         openDeleteModal();
     };
 
-    function formatLocalDateTime(date: Date): string {
-        const offset = date.getTimezoneOffset(); // minutos de diferença para UTC
-        const localDate = new Date(date.getTime() - offset * 60000); // ajusta para hora local
-        return localDate.toISOString().slice(0, 16); // formato para datetime-local
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("pt-PT", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+    }
+
+    function formatLocalDateTime(date: string): string {
+        const localDate = new Date(date);
+        const year = localDate.getFullYear();
+        const month = String(localDate.getMonth() + 1).padStart(2, "0");
+        const day = String(localDate.getDate()).padStart(2, "0");
+        const hours = String(localDate.getHours()).padStart(2, "0");
+        const minutes = String(localDate.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
     const handleEditClick = (event: Event) => {
@@ -74,14 +86,6 @@ export default function EventsTable({ data }: EventsTableProps) {
             startAt: event.startAt,
             endAt: event.endAt,
             price: event.price,
-            address: {
-                road: event.addressEvents.road,
-                roadNumber: event.addressEvents.roadNumber,
-                postCode: event.addressEvents.postCode,
-                localtown: event.addressEvents.localtown,
-            },
-            eventPicture: event.eventPicture || '',
-            eventStatus: event.eventStatus.status,
         });
 
         openModal();
@@ -97,16 +101,24 @@ export default function EventsTable({ data }: EventsTableProps) {
     };
 
     const confirmDelete = () => {
-        console.log("Deleting event:", eventToDelete);
-        closeDeleteModal();
-        setEventToDelete(null);
+        if (eventToDelete) {
+            deleteEvent(eventToDelete.eventID, {
+                onSuccess: () => {
+                    closeDeleteModal();
+                    setEventToDelete(null);
+                },
+                onError: (err) => {
+                    console.log("Erro ao apagar evento:", err);
+                },
+            });
+        }
     };
 
     const handleSave = () => {
         if (eventToDelete) {
-            console.log("Saving changes for:", formData);
+            editEvent({ id: eventToDelete.eventID, data: formData });
+            closeModal();
         }
-        closeModal();
     };
 
     const toggleDropdown = (id: string) => {
@@ -160,25 +172,11 @@ export default function EventsTable({ data }: EventsTableProps) {
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {event.startAt.toLocaleDateString("pt-PT", {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: false,
-                                    })}
+                                    {formatDate(event.startAt)}
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {event.endAt.toLocaleDateString("pt-PT", {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: false,
-                                    })}
+                                    {formatDate(event.endAt)}
                                 </TableCell>
 
 
@@ -190,11 +188,15 @@ export default function EventsTable({ data }: EventsTableProps) {
                                     <Badge
                                         size="sm"
                                         color={
-                                            event.eventStatus.status === "Completo"
-                                                ? "success"
+                                            event.eventStatus.status === "Pendente"
+                                                ? "warning"
                                                 : event.eventStatus.status === "Aprovado"
-                                                    ? "primary"
-                                                    : "error"
+                                                    ? "info"
+                                                    : event.eventStatus.status === "Completo"
+                                                        ? "success"
+                                                        : event.eventStatus.status === "Comentado"
+                                                            ? "success"
+                                                            : "error"
                                         }
                                     >
                                         {event.eventStatus.status}
@@ -249,27 +251,20 @@ export default function EventsTable({ data }: EventsTableProps) {
                                         <Label>Event Name</Label>
                                         <Input
                                             type="text"
-                                            name="firstName"
+                                            name="name"
                                             value={formData.name}
                                             onChange={handleInputChange}
                                         />
                                     </div>
 
                                     <div className="col-span-2 lg:col-span-1">
-                                        <Label>Status</Label>
-                                        <select
-                                            name="eventStatus"
-                                            value={formData.eventStatus}
+                                        <Label>Price</Label>
+                                        <Input
+                                            type="number"
+                                            name="price"
+                                            value={formData.price}
                                             onChange={handleInputChange}
-                                            className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90"
-                                        >
-                                            <option value="Pendente">Pendente</option>
-                                            <option value="Aprovado">Aprovado</option>
-                                            <option value="Completo">Completo</option>
-                                            <option value="Completo">Avaliado</option>
-                                            <option value="Completo">Cancelado</option>
-                                        </select>
-
+                                        />
                                     </div>
 
                                     <div className="col-span-2 lg:col-span-1">
@@ -286,8 +281,8 @@ export default function EventsTable({ data }: EventsTableProps) {
                                         <Label>End</Label>
                                         <Input
                                             type="datetime-local"
-                                            name="startAt"
-                                            value={formatLocalDateTime(formData.startAt)}
+                                            name="endAt"
+                                            value={formatLocalDateTime(formData.endAt)}
                                             onChange={handleInputChange}
                                         />
                                     </div>
@@ -302,23 +297,14 @@ export default function EventsTable({ data }: EventsTableProps) {
                                             className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 h-32 resize-y"
                                         />
                                     </div>
-                                    <div className="col-span-2 lg:col-span-1">
-                                        <Label>Price</Label>
-                                        <Input
-                                            type="number"
-                                            name="price"
-                                            value={formData.price}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                            <Button size="sm" variant="outline" onClick={closeModal}>
+                            <Button type="button" size="sm" variant="outline" onClick={closeModal}>
                                 Close
                             </Button>
-                            <Button size="sm" onClick={handleSave}>
+                            <Button type="button" size="sm" onClick={handleSave}>
                                 Save Changes
                             </Button>
                         </div>
@@ -341,10 +327,10 @@ export default function EventsTable({ data }: EventsTableProps) {
                         ? This action cannot be undone.
                     </p>
                     <div className="flex justify-end gap-3">
-                        <Button variant="outline" size="sm" onClick={closeDeleteModal}>
+                        <Button type="button" variant="outline" size="sm" onClick={closeDeleteModal}>
                             Cancel
                         </Button>
-                        <Button variant='primary' size="sm" onClick={confirmDelete}>
+                        <Button type="button" variant='primary' size="sm" onClick={confirmDelete}>
                             Confirm
                         </Button>
                     </div>
