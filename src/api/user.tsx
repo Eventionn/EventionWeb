@@ -4,9 +4,21 @@ import { api } from './client';
 import { userMocks } from '../mocks/userMock';
 
 // GETs
-const getUsers = async () => (await api.get('/user/api/users')).data;
+const getUsers = async () => {
+    const token = localStorage.getItem("token");  
+  
+    if (!token) {
+      throw new Error("Token não encontrado");
+    }
+  
+    return (await api.get('/user/api/users', {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      }
+    })).data;
+  };
+  
 export const getUserById = (id: string) => api.get(`/user/api/users/${id}`);
-
 
 
 export function useUsers(): UseQueryResult<User[]> | { data: User[]; isPending: false; isError: false } {

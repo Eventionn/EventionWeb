@@ -5,14 +5,29 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
+import { login } from "../../api/auth";
 
 export default function SignInForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignIn = () => {
-    navigate("/");
+  const handleSignIn = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    const userData = { email, password };
+    console.log(userData)
+    try {
+      const user = await login(userData);
+      localStorage.setItem("token", user.token);
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Email ou senha inválidos.");
+    }
   };
 
   return (
@@ -67,23 +82,29 @@ export default function SignInForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSignIn}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  <Input
+                placeholder="info@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
                 </div>
                 <div>
                   <Label>
                     Password <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                    />
+                  <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -96,6 +117,13 @@ export default function SignInForm() {
                     </span>
                   </div>
                 </div>
+
+                {error && (
+              <div className="text-sm text-error-500 bg-error-100 p-2 rounded-md">
+                {error}
+              </div>
+            )}
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
