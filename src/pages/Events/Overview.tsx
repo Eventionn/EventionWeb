@@ -1,4 +1,3 @@
-// import TopEventsMetrics from "../../components/events/overview/TopEvents";
 import EventsTable from "../../components/events/overview/Table";
 import { useEvents } from "../../api/event";
 import { useUserInEvents } from "../../api/userinevent";
@@ -10,24 +9,22 @@ export default function EventsOverview() {
 
     if (data?.length == 0) return (
         <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
-            <img 
-                src="/images/error/Mask Group.svg"  
-                alt="Error" 
-                className="hidden dark:block opacity-70" 
+            <img
+                src="/images/error/Mask Group.svg"
+                alt="Error"
+                className="hidden dark:block opacity-70"
             />
-            <img 
-                src="/images/error/Group 33596.svg" 
-                alt="Error" 
-                className="dark:hidden opacity-70" 
+            <img
+                src="/images/error/Group 33596.svg"
+                alt="Error"
+                className="dark:hidden opacity-70"
             />
-            
+
             <span className="text-lg text-gray-700 dark:text-gray-300 font-semibold">
                 No events yet
             </span>
         </div>
     );
-    
-    
 
     if (isPending || isTicketsPending)
         return (
@@ -51,20 +48,32 @@ export default function EventsOverview() {
             </div>
         );
 
-    if (isError) return (
-        <div className="flex items-center justify-center h-[200px]">
-            <img src="/images/error/Group 33596.svg" alt="Error" className="dark:hidden" />
-        </div>
-    );
+    if (isError) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
+                <img
+                    src="/images/error/Mask Group.svg"
+                    alt="Error"
+                    className="hidden dark:block opacity-70"
+                />
+                <img
+                    src="/images/error/Group 33596.svg"
+                    alt="Error"
+                    className="dark:hidden opacity-70"
+                />
+
+                <span className="text-lg text-gray-700 dark:text-gray-300 font-semibold">
+                    Error loading events. Refresh the page or try again later.
+                </span>
+            </div>
+        )
+
+    }
 
     return (
         <>
             <TopEventsMetrics data={tickets} />
             <EventsTable data={data} />
-
         </>
-
-
-
     );
 }

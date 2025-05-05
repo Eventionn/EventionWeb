@@ -30,6 +30,18 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
         setOpenDropdownId((prev) => (prev === id ? null : id));
     };
 
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("pt-PT", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+    }
+
     const closeDropdown = () => {
         setOpenDropdownId(null);
     };
@@ -52,7 +64,6 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Start</TableCell>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">End</TableCell>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Price</TableCell>
-                            <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Status</TableCell>
                         </TableRow>
                     </TableHeader>
 
@@ -79,34 +90,16 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {event.startAt.toLocaleDateString("pt-PT", {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: false,
-                                    })}
+                                    {formatDate(event.startAt)}
                                 </TableCell>
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {event.endAt.toLocaleDateString("pt-PT", {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: false,
-                                    })}
+                                    {formatDate(event.endAt)}
                                 </TableCell>
 
 
                                 <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                     {event.price > 0 ? event.price + ' €' : 'Free'}
-                                </TableCell>
-
-                                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                    {event.eventStatus.status}
                                 </TableCell>
 
                                 <TableCell className="relative">
