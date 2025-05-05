@@ -3,8 +3,8 @@ import { api } from './client';
 import { UserInEvent } from '../types/UserInEvent';
 import { userInEventMocks } from '../mocks/userInEventMock';
 
-const getUserInEvents = async () => (await api.get('/userinevent/api/userinevents')).data;
-const getUserInEventById = async (id: string) => (await api.get(`/userinevent/api/userinevents/${id}`)).data;
+const getUserInEvents = async () => (await api.get('/userinevent/api/tickets')).data;
+const getUserInEventById = async (id: string) => (await api.get(`/userinevent/api/tickets/${id}`)).data;
 
 export function useUserInEvents(): UseQueryResult<UserInEvent[]> | { data: UserInEvent[]; isPending: false; isError: false } {
     const isMock = import.meta.env.VITE_MOCKS === 'true';
