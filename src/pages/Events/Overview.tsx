@@ -7,7 +7,9 @@ export default function EventsOverview() {
     const { data, isPending, isError } = useEvents();
     const { data: tickets, isPending: isTicketsPending } = useUserInEvents();
 
-    if (data?.length == 0) return (
+    const events = data?.filter((event) => event.eventStatus.status !== "Pendente")
+
+    if (events?.length == 0) return (
         <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
             <img
                 src="/images/error/Mask Group.svg"
@@ -72,8 +74,8 @@ export default function EventsOverview() {
 
     return (
         <>
-            <TopEventsMetrics data={tickets} />
-            <EventsTable data={data} />
+            {tickets ? <TopEventsMetrics data={tickets} /> : null}
+            <EventsTable data={events} />
         </>
     );
 }

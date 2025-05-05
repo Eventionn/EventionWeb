@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Event } from "../../../types/Event";
+import { useApproveEvent, useDeleteEvent } from "../../../api/event";
 
 interface ApproveEventsTableProps {
     tableData: Event[];
@@ -8,6 +9,8 @@ interface ApproveEventsTableProps {
 export default function ApproveEventsCardView({ tableData }: ApproveEventsTableProps) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 9;
+    const approveEventMutation = useApproveEvent();
+    const rejectEventMutation = useDeleteEvent();
 
     const totalPages = Math.ceil(tableData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -18,6 +21,14 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
+    };
+
+    const handleApprove = (eventId: string) => {
+        approveEventMutation.mutate({ id: eventId });
+    };
+
+    const handleReject = (eventId: string) => {
+        rejectEventMutation.mutate(eventId);
     };
 
     return (
@@ -47,11 +58,17 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                             </div>
 
                             <div className="mt-4 flex gap-2">
-                                <button className="flex-1 bg-red-100 text-red-700 text-sm py-2 rounded-lg hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:hover:bg-red-800 transition font-medium">
+                                <button
+                                    onClick={() => handleReject(event.eventID)}
+                                    className="flex-1 bg-red-100 text-red-700 text-sm py-2 rounded-lg hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:hover:bg-red-800 transition font-medium"
+                                >
                                     Reject
                                 </button>
 
-                                <button className="flex-1 bg-green-100 text-green-700 text-sm py-2 rounded-lg hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800 transition font-medium">
+                                <button
+                                    onClick={() => handleApprove(event.eventID)}
+                                    className="flex-1 bg-green-100 text-green-700 text-sm py-2 rounded-lg hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800 transition font-medium"
+                                >
                                     Approve
                                 </button>
                             </div>
@@ -61,7 +78,6 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                 ))}
             </div>
 
-            {/* Paginação */}
             <div className="flex items-center justify-center gap-2 py-4">
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}

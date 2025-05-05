@@ -1,7 +1,7 @@
 import { Event } from "../types/Event";
 import { EventStatus } from "../types/EventStatus";
 
-const eventStatuses: EventStatus[] = [
+export const eventStatuses: EventStatus[] = [
   { eventStatusID: "status-001", status: "Pendente" },
   { eventStatusID: "status-001", status: "Aprovado" },
   { eventStatusID: "status-002", status: "Completo" },

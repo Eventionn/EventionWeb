@@ -11,6 +11,7 @@ import { MoreDotIcon } from "../../../icons";
 import { Dropdown } from "../../ui/dropdown/Dropdown";
 import { DropdownItem } from "../../ui/dropdown/DropdownItem";
 import { Event } from "../../../types/Event";
+import { useApproveEvent, useDeleteEvent } from "../../../api/event";
 
 interface ApproveEventsTableProps {
     tableData: Event[];
@@ -20,6 +21,8 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const approveEventMutation = useApproveEvent();
+    const rejectEventMutation = useDeleteEvent();
 
     const totalPages = Math.ceil(tableData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -42,6 +45,16 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
         });
     }
 
+    const handleApprove = (eventId: string) => {
+        approveEventMutation.mutate({ id: eventId });
+        setOpenDropdownId(null);
+    }
+
+    const handleReject = (eventId: string) => {
+        rejectEventMutation.mutate(eventId);
+        setOpenDropdownId(null);
+    }
+
     const closeDropdown = () => {
         setOpenDropdownId(null);
     };
@@ -51,8 +64,6 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
             setCurrentPage(page);
         }
     };
-
-    console.log("TableData:", tableData.length, tableData);
 
     return (
         <div className="overflow-hidden mt-5 rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -113,20 +124,18 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                                         className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
                                     >
                                         <DropdownItem
-                                            onItemClick={closeDropdown}
+                                            onItemClick={() => handleApprove(event.eventID)}
                                             className="px-3 py-2 rounded-md hover:bg-green-100 dark:hover:bg-green-700 text-green-600 dark:text-green-400"
                                         >
                                             Approve
                                         </DropdownItem>
                                         <DropdownItem
-                                            onItemClick={closeDropdown}
+                                            onItemClick={() => handleReject(event.eventID)}
                                             className="px-3 py-2 rounded-md hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400"
                                         >
                                             Reject
                                         </DropdownItem>
                                     </Dropdown>
-
-
                                 </TableCell>
                             </TableRow>
                         ))}
