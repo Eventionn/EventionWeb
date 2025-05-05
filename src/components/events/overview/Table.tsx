@@ -20,11 +20,11 @@ import Badge from "../../ui/badge/Badge";
 import { EditEventData, useDeleteEvent, useEditEvent } from "../../../api/event";
 
 interface EventsTableProps {
-    data: Event[];
+    data: Event[] | undefined;
 }
 
 export default function EventsTable({ data }: EventsTableProps) {
-    const tableData = data.filter((event) => event.eventStatus.status !== "Pendente");
+    const tableData = data!.filter((event) => event.eventStatus.status !== "Pendente");
     const { isOpen, openModal, closeModal } = useModal();
     const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
     const {

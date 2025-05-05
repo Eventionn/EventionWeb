@@ -1,4 +1,3 @@
-import { AddressEvent } from "./AddressEvent";
 import { EventStatus } from "./EventStatus";
 
 export interface Event {
@@ -11,6 +10,5 @@ export interface Event {
     price: number;
     createdAt: Date;
     eventStatus: EventStatus;
-    addressEvents: AddressEvent[];
     eventPicture?: string;
 }
