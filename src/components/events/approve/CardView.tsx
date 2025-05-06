@@ -11,6 +11,8 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
     const itemsPerPage = 9;
     const approveEventMutation = useApproveEvent();
     const rejectEventMutation = useDeleteEvent();
+    const eventUrl = import.meta.env.VITE_EVENT_API_URL;
+    const isMock = import.meta.env.VITE_MOCKS;
 
     const totalPages = Math.ceil(tableData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -41,7 +43,7 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                     >
                         <div className="w-full h-35 overflow-hidden">
                             <img
-                                src={event.eventPicture}
+                                src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                                 alt={event.name}
                                 className="object-cover w-full h-full"
                             />

@@ -21,6 +21,8 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const eventUrl = import.meta.env.VITE_EVENT_API_URL;
+    const isMock = import.meta.env.VITE_MOCKS;
     const approveEventMutation = useApproveEvent();
     const rejectEventMutation = useDeleteEvent();
 
@@ -70,7 +72,7 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
             <div className="max-w-full overflow-x-auto">
                 <Table>
                     <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-                    <TableRow>
+                        <TableRow>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Event</TableCell>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Start</TableCell>
                             <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">End</TableCell>
@@ -85,7 +87,7 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 overflow-hidden rounded-full">
                                             <img
-                                                src={event.eventPicture}
+                                                src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                                                 alt={event.name}
                                                 width={40}
                                                 height={40}
