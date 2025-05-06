@@ -27,13 +27,15 @@ export default function EventsTable({ data }: EventsTableProps) {
     const tableData = data!.filter((event) => event.eventStatus.status !== "Pendente");
     const { isOpen, openModal, closeModal } = useModal();
     const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
+    const eventUrl = import.meta.env.VITE_EVENT_API_URL;
+    const isMock = import.meta.env.VITE_MOCKS;
     const {
         isOpen: isDeleteModalOpen,
         openModal: openDeleteModal,
         closeModal: closeDeleteModal,
     } = useModal();
     const { mutate: editEvent } = useEditEvent();
-    const { mutate: deleteEvent} = useDeleteEvent();
+    const { mutate: deleteEvent } = useDeleteEvent();
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -156,7 +158,7 @@ export default function EventsTable({ data }: EventsTableProps) {
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 overflow-hidden rounded-full">
                                             <img
-                                                src={event.eventPicture}
+                                                src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                                                 alt={event.name}
                                                 width={40}
                                                 height={40}
