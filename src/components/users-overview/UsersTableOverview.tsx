@@ -108,10 +108,18 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
   };
 
   const confirmDelete = () => {
-    console.log("Deleting user:", userToDelete);
-    closeDeleteModal();
-    setUserToDelete(null);
-  };
+    if (userToDelete) {
+        deleteUser(userToDelete.userID, {
+            onSuccess: () => {
+                closeDeleteModal();
+                setUserToDelete(null);
+            },
+            onError: (err) => {
+                console.log("Erro ao apagar utilizador:", err);
+            },
+        });
+    }
+};
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
