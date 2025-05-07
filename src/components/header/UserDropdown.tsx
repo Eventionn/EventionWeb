@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { User } from "../../types/User";
+import { useUserMyProfile } from "../../api/user";
 
-interface UserDropdownProps {
-  data:User[];
-}
+// interface UserDropdownProps {
+//   data:User;
+// }
 
-export default function UserDropdown(data:UserDropdownProps) {
+export default function UserDropdown(data:User) {
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown() {
@@ -18,6 +19,13 @@ export default function UserDropdown(data:UserDropdownProps) {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+  };
+
+
+
   return (
     <div className="relative">
       <button
@@ -25,10 +33,10 @@ export default function UserDropdown(data:UserDropdownProps) {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src={data.data[0].profilePicture} alt="User" className="w-full h-full object-cover"/>
+          <img src={data.profilePicture} alt="User" className="w-full h-full object-cover"/>
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{data.data[0].username}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{data.username}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -83,6 +91,7 @@ export default function UserDropdown(data:UserDropdownProps) {
           </li>
         </ul>
         <Link
+          onClick={handleSignOut}
           to="/signin"
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >

@@ -3,12 +3,17 @@ import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import UserDropdown from "../components/header/UserDropdown";
-import { userMocks } from "../mocks/userMock";
+import { useUserMyProfile } from "../api/user";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+
+  const { data, isPending, isError } = useUserMyProfile();
+  
+  // if (isPending) return <p>Carregando Users...</p>;
+  // if (isError) return <p>Erro ao carregar Users.</p>;
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -21,6 +26,8 @@ const AppHeader: React.FC = () => {
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
   };
+
+
 
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
@@ -106,7 +113,7 @@ const AppHeader: React.FC = () => {
           <div className="flex items-center gap-2 2xsm:gap-3">
             <ThemeToggleButton />
           </div>
-          <UserDropdown data={userMocks}/>
+          {data && <UserDropdown {...data} />}
         </div>
       </div>
     </header>

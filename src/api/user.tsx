@@ -14,12 +14,18 @@ export interface EditUserData {
 // GETs
 const getUsers = async () => {
     const token = localStorage.getItem("token");  
-  
-    if (!token) {
-      throw new Error("Token não encontrado");
-    }
-  
+
     return (await api.get('/user/api/users', {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      }
+    })).data;
+  };
+
+  const getMyProfile = async () => {
+    const token = localStorage.getItem("token");  
+
+    return (await api.get('/user/api/users/my-profile', {
       headers: {
         Authorization: `Bearer ${token}`, 
       }
@@ -59,6 +65,27 @@ export function useUsers(): UseQueryResult<User[]> | { data: User[]; isPending: 
     }
 
     return query;
+}
+
+
+export function useUserMyProfile(): UseQueryResult<User> | { data: User; isPending: false; isError: false } {
+  const isMock = import.meta.env.VITE_MOCKS === 'true';
+
+  const query = useQuery<User>({
+      queryKey: ['userProfile'],
+      queryFn: getMyProfile,
+      enabled: !isMock,
+  });
+
+  if (isMock) {
+      return {
+          data: userMocks[0],
+          isPending: false,
+          isError: false,
+      };
+  }
+
+  return query;
 }
 
 

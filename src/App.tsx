@@ -9,6 +9,7 @@ import Overview from "./pages/Dashboard/Overview";
 import EventsOverview from "./pages/Events/Overview";
 import ApproveEvents from "./pages/Events/Approve";
 import UsersOverview from "./pages/UsersOverview/UsersOverview";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -18,11 +19,11 @@ export default function App() {
         <Routes>
 
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Overview />} />
-            <Route path="/events" element={<EventsOverview />} />
-            <Route path="/approve" element={<ApproveEvents />} />
-            <Route path="/users" element={<UsersOverview />} />
-            <Route path="/profile" element={<UserProfiles />} />
+            <Route index path="/" element={<ProtectedRoute><Overview /></ProtectedRoute>} />
+            <Route path="/events" element={<ProtectedRoute><EventsOverview/></ProtectedRoute>} />
+            <Route path="/approve" element={<ProtectedRoute><ApproveEvents /></ProtectedRoute>} />
+            <Route path="/users" element={<ProtectedRoute><UsersOverview /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><UserProfiles /></ProtectedRoute>} />
           </Route>
 
           <Route path="/signin" element={<SignIn />} />
