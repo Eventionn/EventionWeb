@@ -4,17 +4,10 @@ import { api } from './client';
 import { userMocks } from '../mocks/userMock';
 
 export interface EditUserData {
-    userID: string;
     username: string;
-    phone?: number;
+    phone?: string;
     email: string;
-    password?: string;
     status: boolean;
-    createdAt: string; 
-    loginType: string;
-    usertype_id: string;
-    profilePicture?: string;
-    //address?: Address; // 
   }
   
 

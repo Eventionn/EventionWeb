@@ -16,6 +16,7 @@ import { Modal } from "../ui/modal";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Button from "../ui/button/Button";
+import { useEditUser, useDeleteUser, EditUserData } from "../../api/user";
 
 interface UsersTableOverviewProps {
   data: User[];
@@ -23,14 +24,16 @@ interface UsersTableOverviewProps {
 
 export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-  const [, setUserToEdit] = useState<User | null>(null);
-  const [formData, setFormData] = useState({
+  const [usertoEdit, setUserToEdit] = useState<User | null>(null);
+  const [formData, setFormData] = useState<EditUserData>({
     username: "",
     email: "",
-    phone: 0,
+    phone: "",
     status: true,
   });
 
+  const { mutate: editUser } = useEditUser();
+  const { mutate: deleteUser } = useDeleteUser();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -56,7 +59,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
     setFormData({
       username: user.username,
       email: user.email,
-      phone: user.phone,
+      phone: user.phone !== null ? user.phone.toString() : "",
       status: user.status,
     });
     openEditModal();
@@ -71,11 +74,14 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+  
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "status" ? value === "true" : value,
+      [name]: name === "status"
+        ? value === "true"
+        : value,
     }));
-  };
+  };  
 
   const toggleDropdown = (id: string) => {
     setOpenDropdownId((prev) => (prev === id ? null : id));
@@ -86,8 +92,19 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
   };
 
   const handleSave = () => {
-    console.log("Saving user:", formData);
-    closeEditModal();
+    if (usertoEdit) {
+      editUser({
+        id: usertoEdit.userID,
+        data: {
+          username: formData.username,
+          email: formData.email,
+          phone: formData.phone, 
+          status: formData.status,
+        },
+      });
+      closeEditModal();
+      setUserToEdit(null);
+    }
   };
 
   const confirmDelete = () => {
@@ -101,6 +118,8 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
       setCurrentPage(page);
     }
   };
+
+console.log(data);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
@@ -240,8 +259,8 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
               </select>
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={closeEditModal}>Cancel</Button>
-              <Button size="sm" onClick={handleSave}>Save</Button>
+              <Button type="button" variant="outline" size="sm" onClick={closeEditModal}>Cancel</Button>
+              <Button type="button" size="sm" onClick={handleSave}>Save</Button>
             </div>
           </form>
         </div>
