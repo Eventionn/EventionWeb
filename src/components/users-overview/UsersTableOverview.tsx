@@ -39,6 +39,8 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+  const userUrl = import.meta.env.VITE_USER_API_URL;
+  const isMock = import.meta.env.VITE_MOCKS;
 
   const {
     isOpen: isEditModalOpen,
@@ -74,14 +76,14 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === "status"
         ? value === "true"
         : value,
     }));
-  };  
+  };
 
   const toggleDropdown = (id: string) => {
     setOpenDropdownId((prev) => (prev === id ? null : id));
@@ -98,7 +100,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
         data: {
           username: formData.username,
           email: formData.email,
-          phone: formData.phone, 
+          phone: formData.phone,
           status: formData.status,
         },
       });
@@ -109,25 +111,23 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
 
   const confirmDelete = () => {
     if (userToDelete) {
-        deleteUser(userToDelete.userID, {
-            onSuccess: () => {
-                closeDeleteModal();
-                setUserToDelete(null);
-            },
-            onError: (err) => {
-                console.log("Erro ao apagar utilizador:", err);
-            },
-        });
+      deleteUser(userToDelete.userID, {
+        onSuccess: () => {
+          closeDeleteModal();
+          setUserToDelete(null);
+        },
+        onError: (err) => {
+          console.log("Erro ao apagar utilizador:", err);
+        },
+      });
     }
-};
+  };
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
-
-console.log(data);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
@@ -139,13 +139,13 @@ console.log(data);
                 User
               </TableCell>
               <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
-                Status
-              </TableCell>
-              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
                 Email
               </TableCell>
               <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
                 Phone
+              </TableCell>
+              <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">
+                Status
               </TableCell>
               <TableCell isHeader children={undefined} />
             </TableRow>
@@ -156,7 +156,13 @@ console.log(data);
                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
-                      <img src={user.profilePicture} alt={user.username} />
+                      <img
+                        src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
+                        alt={user.username}
+                        width={40}
+                        height={40}
+                        className="object-cover object-center w-full h-full"
+                      />
                     </div>
                     <div>
                       <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
@@ -169,15 +175,16 @@ console.log(data);
                   </div>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
-                  <Badge size="sm" color={user.status ? "success" : "error"}>
-                    {user.status ? "Active" : "Inactive"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
                   {user.email}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
                   {user.phone}
+                </TableCell>
+                
+                <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
+                  <Badge size="sm" color={user.status ? "success" : "error"}>
+                    {user.status ? "Active" : "Inactive"}
+                  </Badge>
                 </TableCell>
                 <TableCell className="relative">
                   <button className="dropdown-toggle" onClick={() => toggleDropdown(user.userID)}>
@@ -221,9 +228,8 @@ console.log(data);
           <button
             key={i}
             onClick={() => handlePageChange(i + 1)}
-            className={`px-3 py-1 rounded-md text-sm border ${
-              currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""
-            } text-theme-sm dark:text-gray-400`}
+            className={`px-3 py-1 rounded-md text-sm border ${currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""
+              } text-theme-sm dark:text-gray-400`}
           >
             {i + 1}
           </button>

@@ -4,7 +4,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-001",
         event_id: "ev-001",
-        userId: "user-001",
+        user_id: "user-001",
         feedback_id: "feedback-001",
         createdAt: new Date("2025-06-01T10:00:00"),
         participated: true,
@@ -12,7 +12,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-002",
         event_id: "ev-002",
-        userId: "user-002",
+        user_id: "user-002",
         feedback_id: "feedback-002",
         createdAt: new Date("2025-07-01T10:00:00"),
         participated: false,
@@ -20,7 +20,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-003",
         event_id: "ev-001",
-        userId: "user-003",
+        user_id: "user-003",
         feedback_id: undefined,
         createdAt: new Date("2025-08-01T10:00:00"),
         participated: true,
@@ -28,7 +28,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-004",
         event_id: "ev-005",
-        userId: "user-004",
+        user_id: "user-004",
         feedback_id: undefined,
         createdAt: new Date("2025-09-01T10:00:00"),
         participated: false,
@@ -36,7 +36,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-005",
         event_id: "ev-004",
-        userId: "user-005",
+        user_id: "user-005",
         feedback_id: undefined,
         createdAt: new Date("2025-10-01T10:00:00"),
         participated: true,
@@ -44,7 +44,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-006",
         event_id: "ev-006",
-        userId: "user-006",
+        user_id: "user-006",
         feedback_id: undefined,
         createdAt: new Date("2025-11-01T10:00:00"),
         participated: false,
@@ -52,7 +52,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-007",
         event_id: "ev-007",
-        userId: "user-007",
+        user_id: "user-007",
         feedback_id: undefined,
         createdAt: new Date("2025-12-01T10:00:00"),
         participated: true,
@@ -60,7 +60,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-008",
         event_id: "ev-007",
-        userId: "user-008",
+        user_id: "user-008",
         feedback_id: undefined,
         createdAt: new Date("2025-01-01T10:00:00"),
         participated: false,
@@ -68,7 +68,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-009",
         event_id: "ev-006",
-        userId: "user-009",
+        user_id: "user-009",
         feedback_id: undefined,
         createdAt: new Date("2025-02-01T10:00:00"),
         participated: true,
@@ -76,7 +76,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-010",
         event_id: "ev-009",
-        userId: "user-010",
+        user_id: "user-010",
         feedback_id: undefined,
         createdAt: new Date("2025-03-01T10:00:00"),
         participated: false,
@@ -84,7 +84,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-011",
         event_id: "ev-006",
-        userId: "user-011",
+        user_id: "user-011",
         feedback_id: undefined,
         createdAt: new Date("2025-04-01T10:00:00"),
         participated: true,
@@ -92,7 +92,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-012",
         event_id: "ev-002",
-        userId: "user-012",
+        user_id: "user-012",
         feedback_id: undefined,
         createdAt: new Date("2025-05-01T10:00:00"),
         participated: false,
@@ -100,7 +100,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-013",
         event_id: "ev-004",
-        userId: "user-013",
+        user_id: "user-013",
         feedback_id: undefined,
         createdAt: new Date("2025-06-01T10:00:00"),
         participated: true,
@@ -108,7 +108,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-014",
         event_id: "ev-003",
-        userId: "user-014",
+        user_id: "user-014",
         feedback_id: undefined,
         createdAt: new Date("2025-07-01T10:00:00"),
         participated: false,
@@ -116,7 +116,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-015",
         event_id: "ev-005",
-        userId: "user-015",
+        user_id: "user-015",
         feedback_id: undefined,
         createdAt: new Date("2025-08-01T10:00:00"),
         participated: true,
@@ -124,7 +124,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-016",
         event_id: "ev-006",
-        userId: "user-016",
+        user_id: "user-016",
         feedback_id: undefined,
         createdAt: new Date("2025-09-01T10:00:00"),
         participated: false,
@@ -132,7 +132,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-017",
         event_id: "ev-009",
-        userId: "user-017",
+        user_id: "user-017",
         feedback_id: undefined,
         createdAt: new Date("2025-10-01T10:00:00"),
         participated: true,
@@ -140,7 +140,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-018",
         event_id: "ev-010",
-        userId: "user-018",
+        user_id: "user-018",
         feedback_id: undefined,
         createdAt: new Date("2025-11-01T10:00:00"),
         participated: false,
@@ -148,7 +148,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-019",
         event_id: "ev-004",
-        userId: "user-019",
+        user_id: "user-019",
         feedback_id: undefined,
         createdAt: new Date("2025-12-01T10:00:00"),
         participated: true,
@@ -156,7 +156,7 @@ export const userInEventMocks: UserInEvent[] = [
     {
         ticketID: "ticket-020",
         event_id: "ev-003",
-        userId: "user-020",
+        user_id: "user-020",
         feedback_id: undefined,
         createdAt: new Date("2025-01-01T10:00:00"),
         participated: false,
