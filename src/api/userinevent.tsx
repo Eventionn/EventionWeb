@@ -37,7 +37,7 @@ export function useUserInEventById(id: string): UseQueryResult<UserInEvent> | { 
 
     if (isMock) {
         return {
-            data: userInEventMocks.find(event => event.eventID === id) || null,
+            data: userInEventMocks.find(event => event.event_id === id) || null,
             isPending: false,
             isError: false,
         };

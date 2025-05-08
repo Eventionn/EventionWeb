@@ -19,7 +19,7 @@ const userType: UserType = {
 
 export const userMocks: User[] = [
   {
-    userID: "uuid-1",
+    userID: "user-001",
     username: "john_doe",
     phone: 123456789,
     email: "john@example.com",
@@ -40,7 +40,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-01.jpg"
   },
   {
-    userID: "uuid-2",
+    userID: "user-002",
     username: "jane_smith",
     phone: 339939393,
     email: "jane@example.com",
@@ -52,7 +52,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-02.jpg"
   },
   {
-    userID: "uuid-3",
+    userID: "user-003",
     username: "maria99",
     phone: 987654321,
     email: "maria@example.com",
@@ -72,7 +72,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-03.jpg"
   },
   {
-    userID: "uuid-4",
+    userID: "user-004",
     username: "bruno_dev",
     phone: 399292929,
     email: "bruno@example.com",
@@ -85,7 +85,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-04.jpg"
   },
   {
-    userID: "uuid-5",
+    userID: "user-005",
     username: "sofia22",
     email: "sofia@example.com",
     phone: 111222333,
@@ -98,7 +98,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-05.jpg"
   },
   {
-    userID: "uuid-6",
+    userID: "user-006",
     username: "ricardo_007",
     email: "ricardo@example.com",
     phone: 444555666,
@@ -110,7 +110,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-06.jpg"
   },
   {
-    userID: "uuid-7",
+    userID: "user-007",
     username: "ana_moura",
     phone: 9399393283,
     email: "ana@example.com",
@@ -122,7 +122,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-07.jpg"
   },
   {
-    userID: "uuid-8",
+    userID: "user-008",
     username: "tiago.tech",
     email: "tiago@example.com",
     phone: 999888777,
@@ -135,7 +135,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-08.jpg"
   },
   {
-    userID: "uuid-9",
+    userID: "user-009",
     username: "luis_lopes",
     phone: 3944804432,
     email: "luis@example.com",
@@ -148,7 +148,7 @@ export const userMocks: User[] = [
     profilePicture: "images/user/user-09.jpg"
   },
   {
-    userID: "uuid-10",
+    userID: "user-010",
     username: "carla.silva",
     phone: 9100983735,
     email: "carla@example.com",
