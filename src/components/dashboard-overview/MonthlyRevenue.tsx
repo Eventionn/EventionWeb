@@ -1,10 +1,10 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { useNavigate } from "react-router";
-import { Event } from "../../types/Event";
+import { UserInEvent } from "../../types/UserInEvent";
 
 interface MonthlyRevenueProps {
-  data: Event[];
+  data: UserInEvent[];
 }
 
 export default function MonthlyRevenue({ data }: MonthlyRevenueProps) {
@@ -12,11 +12,11 @@ export default function MonthlyRevenue({ data }: MonthlyRevenueProps) {
 
   const monthlyRevenue = new Array(12).fill(0); // Jan - Dec
 
-  data.forEach((event) => {
-    const date = new Date(event.startAt);
-    const monthIndex = date.getMonth(); // 0 = Jan, 11 = Dec
-    monthlyRevenue[monthIndex] += event.price ?? 0;
-  });
+  // data.forEach((event) => {
+  //   const date = new Date(event.startAt);
+  //   const monthIndex = date.getMonth(); // 0 = Jan, 11 = Dec
+  //   monthlyRevenue[monthIndex] += event.price ?? 0;
+  // });
 
   const options: ApexOptions = {
     legend: {
@@ -117,23 +117,23 @@ export default function MonthlyRevenue({ data }: MonthlyRevenueProps) {
   };
 
 
-  // const series = [
-  //   {
-  //     name: "Events",
-  //     data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-  //   },
-  //   {
-  //     name: "Revenue",
-  //     data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-  //   },
-  // ];
-
   const series = [
     {
+      name: "Events",
+      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+    },
+    {
       name: "Revenue",
-      data: monthlyRevenue,
+      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
     },
   ];
+
+  // const series = [
+  //   {
+  //     name: "Revenue",
+  //     data: monthlyRevenue,
+  //   },
+  // ];
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">

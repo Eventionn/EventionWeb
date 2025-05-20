@@ -6,12 +6,14 @@ import TableCard from "../../components/dashboard-overview/TableCard";
 import MapCard from "../../components/dashboard-overview/MapCard";
 import { useEvents } from "../../api/event";
 import { useUsers } from "../../api/user";
+import { useUserInEvents } from "../../api/userinevent";
 
 export default function Overview() {
 
     const { data, isPending, isError } = useEvents();
     const { data: users, isPending: isPendingUsers, isError:isErrorUsers } = useUsers();
     const { data: events, isPending: isPendingEvents, isError:isErrorEvents } = useEvents();
+    const { data: tickets, isPending: isPendingTickets, isError:isErrorTickets } = useUserInEvents();
 
     return (
         <>
@@ -20,7 +22,7 @@ export default function Overview() {
                     <OverallMetrics data={isPending || isError || !data ? null : data} users={isPending || isError || !users ? null : users} />
                 </div>
                 <div className="col-span-12">
-                    <MonthlyRevenue data={events || []} />
+                    <MonthlyRevenue data={tickets || []} />
                 </div>
                 <div className="col-span-12 xl:col-span-6">
                     <TableCard title="Users" path="/users">
