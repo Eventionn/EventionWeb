@@ -1,7 +1,23 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import { useNavigate } from "react-router";
+import { Event } from "../../types/Event";
 
-export default function MonthlyRevenue() {
+interface MonthlyRevenueProps {
+  data: Event[];
+}
+
+export default function MonthlyRevenue({ data }: MonthlyRevenueProps) {
+  const navigate = useNavigate();
+
+  const monthlyRevenue = new Array(12).fill(0); // Jan - Dec
+
+  data.forEach((event) => {
+    const date = new Date(event.startAt);
+    const monthIndex = date.getMonth(); // 0 = Jan, 11 = Dec
+    monthlyRevenue[monthIndex] += event.price ?? 0;
+  });
+
   const options: ApexOptions = {
     legend: {
       show: false,
@@ -100,17 +116,25 @@ export default function MonthlyRevenue() {
     },
   };
 
+
+  // const series = [
+  //   {
+  //     name: "Events",
+  //     data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+  //   },
+  //   {
+  //     name: "Revenue",
+  //     data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+  //   },
+  // ];
+
   const series = [
     {
-      name: "Events",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-    },
-    {
       name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+      data: monthlyRevenue,
     },
   ];
-  
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
@@ -122,6 +146,14 @@ export default function MonthlyRevenue() {
             Target you’ve set for each month
           </p>
         </div>
+        <button
+          onClick={() => {
+
+          }}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Ver ganhos
+        </button>
       </div>
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">

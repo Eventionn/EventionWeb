@@ -15,6 +15,9 @@ interface EventsTableProps {
 
 export default function EventsTable({ data }: EventsTableProps) {
 
+  const eventUrl = import.meta.env.VITE_EVENT_API_URL;
+  const isMock = import.meta.env.VITE_MOCKS;
+
   const datafilter = data.filter((event) => event.eventStatus.status === "Aprovado" || event.eventStatus.status === "Completo");
   const tableData = datafilter.slice(0, 5)
 
@@ -46,10 +49,10 @@ export default function EventsTable({ data }: EventsTableProps) {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
                       <img
-                        src={event.eventPicture}
+                        src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                         alt={event.name}
-                        width={40}
-                        height={40}
+                        width={60}
+                        height={60}
                         className="object-cover object-center w-full h-full"
                       />
                     </div>

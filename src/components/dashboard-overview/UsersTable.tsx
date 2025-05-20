@@ -16,6 +16,8 @@ interface UsersTableProps {
 export default function UsersTable( { data }: UsersTableProps) {
 
   const datafiltered = data.filter(user => user.status == true).slice(0, 5);
+  const userUrl = import.meta.env.VITE_USER_API_URL;
+  const isMock = import.meta.env.VITE_MOCKS;
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -47,10 +49,11 @@ export default function UsersTable( { data }: UsersTableProps) {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
                       <img
-                        width={40}
-                        height={40}
-                        src={user.profilePicture}
+                        width={60}
+                        height={60}
+                        src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
                         alt={user.username}
+                       className="w-full h-full object-contain"
                       />
                     </div>
                     <div>

@@ -4,8 +4,6 @@ import UsersTable from "../../components/dashboard-overview/UsersTable";
 import EventsTable from "../../components/dashboard-overview/EventsTable";
 import TableCard from "../../components/dashboard-overview/TableCard";
 import MapCard from "../../components/dashboard-overview/MapCard";
-import { eventMocks } from "../../mocks/eventMock";
-import { userMocks } from "../../mocks/userMock";
 import { useEvents } from "../../api/event";
 import { useUsers } from "../../api/user";
 
@@ -13,6 +11,7 @@ export default function Overview() {
 
     const { data, isPending, isError } = useEvents();
     const { data: users, isPending: isPendingUsers, isError:isErrorUsers } = useUsers();
+    const { data: events, isPending: isPendingEvents, isError:isErrorEvents } = useEvents();
 
     return (
         <>
@@ -21,16 +20,16 @@ export default function Overview() {
                     <OverallMetrics data={isPending || isError || !data ? null : data} users={isPending || isError || !users ? null : users} />
                 </div>
                 <div className="col-span-12">
-                    <MonthlyRevenue />
+                    <MonthlyRevenue data={events || []} />
                 </div>
                 <div className="col-span-12 xl:col-span-6">
                     <TableCard title="Users" path="/users">
-                        <UsersTable data={userMocks} />
+                        <UsersTable data={users || []} />
                     </TableCard>
                 </div>
                 <div className="col-span-12 xl:col-span-6">
                     <TableCard title="Events" path="/events">
-                        <EventsTable data={eventMocks} />
+                        <EventsTable data={events || []} />
                     </TableCard>
                 </div>
 
