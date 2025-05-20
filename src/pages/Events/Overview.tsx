@@ -5,7 +5,7 @@ import TopEventsMetrics from "../../components/events/overview/TopEvents";
 
 export default function EventsOverview() {
     const { data, isPending, isError } = useEvents();
-    const { data: tickets, isPending: isTicketsPending } = useUserInEvents();
+    const { data: tickets, isPending: isTicketsPending, isError: isTicketsError } = useUserInEvents();
 
     const events = data?.filter((event) => event.eventStatus.status !== "Pendente")
 
@@ -50,7 +50,7 @@ export default function EventsOverview() {
             </div>
         );
 
-    if (isError) {
+    if (isError || isTicketsError) {
         return (
             <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
                 <img
