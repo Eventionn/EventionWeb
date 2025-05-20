@@ -17,9 +17,8 @@ export default function UsersOverview() {
   return (
     <>
       <div className="col-span-12">
-        <div className="mt-4">
           {tickets && tickets.length > 0 ? <TopUsersMetrics data={tickets} /> : null}
-        </div>
+
       </div>
 
       <hr className="col-span-12 border-t border-gray-200 dark:border-white/10 my-6" />

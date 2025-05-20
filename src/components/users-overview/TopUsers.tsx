@@ -60,7 +60,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
   ];
 
   return (
-    <div className="flex flex-col sm:flex-row justify-center items-end gap-8 mt-12 w-full max-w-6xl mx-auto px-4">
+    <div className="flex flex-col sm:flex-row justify-center items-end gap-8 mt-7 w-full max-w-6xl mx-auto px-4">
       {reordered.map((organizer, index) => {
         const user = userMap.get(organizer?.userId || "");
   
