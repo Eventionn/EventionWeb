@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { UserInEvent } from "../../types/UserInEvent";
 import { useEvents } from "../../api/event";
 import { useUsers } from "../../api/user";
+import { Modal } from "../ui/modal";
 
 interface TopOrganizersProps {
   data: UserInEvent[];
@@ -11,6 +13,9 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
   const { data: users } = useUsers();
   const userUrl = import.meta.env.VITE_USER_API_URL;
   const isMock = import.meta.env.VITE_MOCKS;
+
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!events || !users) return null;
 
@@ -59,56 +64,142 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
     },
   ];
 
+  const openModal = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedUserId(null);
+    setIsModalOpen(false);
+  };
+
+  const selectedUser = selectedUserId ? userMap.get(selectedUserId) : null;
+  const selectedUserEvents = selectedUserId
+    ? events.filter(event => event.userId === selectedUserId)
+    : [];
+
+  const getTicketCount = (eventId: string) =>
+    data.filter(ticket => ticket.event_id === eventId && ticket.participated).length;
+
   return (
-    <div className="flex flex-col sm:flex-row justify-center items-end gap-8 mt-7 w-full max-w-6xl mx-auto px-4">
-      {reordered.map((organizer, index) => {
-        const user = userMap.get(organizer?.userId || "");
-  
-        if (!organizer || !user) return null;
-  
-        const style = podiumStyles[index];
-  
-        const widthClasses = ["min-w-[160px]", "min-w-[200px]", "min-w-[160px]"];
-        const imageSizes = ["w-24 h-24", "w-28 h-28", "w-24 h-24"];
-        const boxHeights = ["h-40", "h-48", "h-36"];
-  
-        return (
-          <div
-            key={organizer.userId}
-            className={`relative flex flex-col items-center justify-end 
-              ${boxHeights[index]} ${widthClasses[index]} 
-              bg-white dark:bg-white/[0.03] rounded-2xl shadow-lg p-5 
-              border-2 ${style.color}`}
-          >
-            <img
-              src={
-                isMock === "true"
-                  ? user.profilePicture
-                  : `${userUrl}${user.profilePicture}`
-              }
-              alt={user.username || "Organizador"}
-              className={`rounded-full border-4 ${style.color} ${imageSizes[index]} object-cover`}
-            />
-            <div className="mt-3 text-center">
-              <div className={`font-bold text-lg ${style.color}`}>
-                {style.label}
-              </div>
-              <div className="text-md text-gray-800 dark:text-gray-100 font-semibold">
-                {user.username}
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {organizer.total.toLocaleString("pt-PT", {
-                  style: "currency",
-                  currency: "EUR",
-                })}
+    <>
+      <div className="flex flex-col sm:flex-row justify-center items-end gap-8 mt-7 w-full max-w-6xl mx-auto px-4">
+        {reordered.map((organizer, index) => {
+          const user = userMap.get(organizer?.userId || "");
+
+          if (!organizer || !user) return null;
+
+          const style = podiumStyles[index];
+
+          const widthClasses = ["min-w-[160px]", "min-w-[200px]", "min-w-[160px]"];
+          const imageSizes = ["w-24 h-24", "w-28 h-28", "w-24 h-24"];
+          const boxHeights = ["h-40", "h-48", "h-36"];
+
+          return (
+            <div
+              key={organizer.userId}
+              onClick={() => openModal(organizer.userId)}
+              className={`cursor-pointer relative flex flex-col items-center justify-end 
+          ${boxHeights[index]} ${widthClasses[index]} 
+          bg-white dark:bg-white/[0.03] rounded-2xl shadow-lg p-5 
+          border-2 ${style.color} hover:scale-105 transition-transform`}
+            >
+              <img
+                src={
+                  isMock === "true"
+                    ? user.profilePicture
+                    : `${userUrl}${user.profilePicture}`
+                }
+                alt={user.username || "Organizador"}
+                className={`rounded-full border-4 ${style.color} ${imageSizes[index]} object-cover`}
+              />
+              <div className="mt-3 text-center min-w-0">
+                <div className={`font-bold text-lg ${style.color}`}>
+                  {style.label}
+                </div>
+                <div
+                  className="text-md text-gray-800 dark:text-gray-100 font-semibold truncate overflow-hidden whitespace-nowrap max-w-[150px]"
+                  title={user.username}
+                >
+                  {user.username}
+                </div>
+
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {organizer.total.toLocaleString("pt-PT", {
+                    style: "currency",
+                    currency: "EUR",
+                  })}
+                </div>
               </div>
             </div>
-  
-          </div>
-        );
-      })}
-    </div>
-  );
-  
+          );
+        })}
+      </div>
 
+
+      <Modal isOpen={isModalOpen} onClose={closeModal} showCloseButton={false} className="max-w-lg mx-auto p-6">
+        <div className="max-h-[80vh] overflow-y-auto">
+          <h2
+            className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100 truncate max-w-full overflow-hidden whitespace-nowrap"
+            title={`Eventos organizados por ${selectedUser?.username}`}
+          >
+            Eventos organizados por {selectedUser?.username}
+          </h2>
+
+          <ul className="space-y-3">
+            {selectedUserEvents.length > 0 ? (
+              selectedUserEvents.map(event => {
+                const ticketCount = getTicketCount(event.eventID);
+                return (
+                  <li
+                    key={event.eventID}
+                    className="border border-gray-300 dark:border-gray-600 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 flex justify-between items-center"
+                  >
+                    <div className="max-w-[70%]">
+                      <div
+                        className="font-semibold text-gray-800 dark:text-gray-100 truncate overflow-hidden whitespace-nowrap"
+                        title={event.name}
+                      >
+                        {event.name}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {new Date(event.startAt).toLocaleDateString("pt-PT")}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Preço:{" "}
+                        {event.price.toLocaleString("pt-PT", {
+                          style: "currency",
+                          currency: "EUR",
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🎟️</span>
+                      <span className="font-bold text-lg text-blue-700 dark:text-blue-400">
+                        {ticketCount}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })
+            ) : (
+              <p className="text-gray-600 dark:text-gray-300">Sem eventos</p>
+            )}
+          </ul>
+
+          <button
+            onClick={closeModal}
+            className="mt-5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 rounded w-full"
+          >
+            Fechar
+          </button>
+        </div>
+      </Modal>
+
+
+
+    </>
+  );
 }
