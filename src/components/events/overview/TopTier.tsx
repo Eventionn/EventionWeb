@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useEventById } from "../../../api/event";
 import { useUsers } from "../../../api/user";
 import { Modal } from "../../ui/modal";
@@ -37,9 +37,11 @@ export default function TopTier({
     (u) => u.event_id === eventID
   );
 
-  const resolvedUsers = users?.filter((user) =>
-    participantsInEvent.find((p) => p.user_id === user.userID)
-  );
+  const resolvedUsers = useMemo(() => {
+    return users?.filter((user) =>
+      participantsInEvent.some((p) => p.user_id === user.userID)
+    );
+  }, [users, participantsInEvent]);
 
   if (isPending) {
     return (

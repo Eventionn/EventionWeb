@@ -175,12 +175,15 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🎟️</span>
-                      <span className="font-bold text-lg text-blue-700 dark:text-blue-400">
-                        {ticketCount}
-                      </span>
-                    </div>
+                    {ticketCount > 1 ?
+                      <div className="flex items-center gap-1">
+                        <span className="text-xl">🎫</span>
+                        <span className="font-bold text-lg text-gray-800 dark:text-gray-100">
+                          {ticketCount}
+                        </span>
+                      </div> : null
+                    }
+
                   </li>
                 );
               })

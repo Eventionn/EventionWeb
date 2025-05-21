@@ -15,7 +15,6 @@ export default function TopEventsMetrics({ data }: TopUserInEventsProps) {
     const topRankedEvents = useMemo<RankedEvent[]>(() => {
         if (!data) return [];
 
-        // Filtra só os que participaram (participated === true)
         const filteredData = data.filter(({ participated }) => participated);
 
         const map: Record<string, number> = {};
