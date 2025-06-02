@@ -1,6 +1,5 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { useNavigate } from "react-router";
 import { useState } from "react";
 import { UserInEvent } from "../../types/UserInEvent";
 import { Event } from "../../types/Event";
@@ -10,8 +9,7 @@ interface MonthlyRevenueProps {
   events: Event[];
 }
 
-export default function MonthlyRevenue({ data, events }: MonthlyRevenueProps) {
-  const navigate = useNavigate();
+export default function MonthlyRevenuee({ data, events }: MonthlyRevenueProps) {
 
   const [showProfit, setShowProfit] = useState(false);
 
@@ -187,7 +185,7 @@ export default function MonthlyRevenue({ data, events }: MonthlyRevenueProps) {
       </div>
 
 
-      <div className="relative max-w-full overflow-x-auto custom-scrollbar min-w-[1000px] xl:min-w-full h-[310px]">
+      <div className="w-full max-w-full overflow-x-auto h-[320px]">
         {/* Loader sobreposto */}
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 dark:bg-gray-900/60">
@@ -200,7 +198,7 @@ export default function MonthlyRevenue({ data, events }: MonthlyRevenueProps) {
             options={options}
             series={series}
             type="area"
-            height={310}
+            height={300}
           />
         )}
       </div>
