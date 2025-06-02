@@ -4,18 +4,43 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { User } from "../../types/User";
+import { getUserFromToken } from "../../utils/getUserFromToken";
 
 interface UserInfoCardProps {
-  data:User[];
+  data: User[];
 }
 
-export default function UserInfoCard(data:UserInfoCardProps) {
+export default function UserInfoCard({ data }: UserInfoCardProps) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const isUsingMocks = import.meta.env.VITE_MOCKS === "true";
+
+  const user = isUsingMocks
+    ? data[0]
+    : (() => {
+        const decoded = getUserFromToken();
+        if (!decoded) return null;
+        return {
+          id: decoded.id,
+          email: decoded.email,
+          username: decoded.username,
+          phone: decoded.phone || "",
+        };
+      })();
+
   const handleSave = () => {
-    // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -30,7 +55,7 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Username
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.data[0].username}
+                {user.username}
               </p>
             </div>
 
@@ -39,7 +64,7 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {data.data[0].email}
+                {user.email}
               </p>
             </div>
 
@@ -48,10 +73,9 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.data[0].phone}
+                {user.phone ? user.phone : "--- --- ---"}
               </p>
             </div>
-
           </div>
         </div>
 
@@ -90,7 +114,6 @@ export default function UserInfoCard(data:UserInfoCardProps) {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2">
-              
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
@@ -99,19 +122,18 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-2">
                     <Label>Username</Label>
-                    <Input type="text" value={data.data[0].username} />
+                    <Input type="text" value={user.username} />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" value={data.data[0].email} />
+                    <Input type="text" value={user.email} />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                    <Input type="text" value={data.data[0].phone} />
+                    <Input type="text" value={user.phone} />
                   </div>
-                  
                 </div>
               </div>
             </div>
