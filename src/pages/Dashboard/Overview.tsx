@@ -22,7 +22,7 @@ export default function Overview() {
                     <OverallMetrics data={isPending || isError || !data ? null : data} users={isPending || isError || !users ? null : users} />
                 </div>
                 <div className="col-span-12">
-                    <MonthlyRevenue data={tickets || []} />
+                    <MonthlyRevenue data={tickets || []} events={events || []} />
                 </div>
                 <div className="col-span-12 xl:col-span-6">
                     <TableCard title="Users" path="/users">
