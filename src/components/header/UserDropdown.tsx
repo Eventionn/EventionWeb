@@ -3,7 +3,6 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link, useNavigate } from "react-router";
 import { User } from "../../types/User";
-import { useUserMyProfile } from "../../api/user";
 
 // interface UserDropdownProps {
 //   data:User;
@@ -24,7 +23,8 @@ export default function UserDropdown(data:User) {
     localStorage.removeItem('token');
   };
 
-
+  const userUrl = import.meta.env.VITE_USER_API_URL;
+console.log(`${userUrl}${data.profilePicture}`)
 
   return (
     <div className="relative">
@@ -33,7 +33,8 @@ export default function UserDropdown(data:User) {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src={data.profilePicture} alt="User" className="w-full h-full object-cover"/>
+          
+          <img src={`${userUrl}${data.profilePicture}`} alt="User" className="w-full h-full object-cover"/>
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">{data.username}</span>
