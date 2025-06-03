@@ -2,10 +2,14 @@ import { useState } from "react";
 import ApproveEventsTable from "../../components/events/approve/Table";
 import ApproveEventsCardView from "../../components/events/approve/CardView";
 import { GridIcon, ListIcon } from "../../icons";
-import { useSuspendedEvents } from "../../api/event";
+import { usePaginatedEvents } from "../../api/event";
 
 export default function ApproveEvents() {
-    const { data, isPending } = useSuspendedEvents();
+    const [page, setPage] = useState(1);
+    const limit = 10;
+
+    const { data, isPending, isError } = usePaginatedEvents('suspended', page, limit);
+
     const [viewType, setViewType] = useState<"table" | "card">("table");
 
     if (isPending)
@@ -30,7 +34,7 @@ export default function ApproveEvents() {
             </div>
         );
 
-    if (data?.length == 0) return (
+    if (data?.data.length == 0) return (
         <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
             <img
                 src="/images/error/Mask Group.svg"
@@ -48,6 +52,28 @@ export default function ApproveEvents() {
             </span>
         </div>
     );
+
+    if (isError) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
+                <img
+                    src="/images/error/Mask Group.svg"
+                    alt="Error"
+                    className="hidden dark:block opacity-70"
+                />
+                <img
+                    src="/images/error/Group 33596.svg"
+                    alt="Error"
+                    className="dark:hidden opacity-70"
+                />
+
+                <span className="text-lg text-gray-700 dark:text-gray-300 font-semibold">
+                    Error loading pending events. Refresh the page or try again later.
+                </span>
+            </div>
+        )
+
+    }
 
 
 
@@ -84,9 +110,19 @@ export default function ApproveEvents() {
             </div>
 
             {viewType === "table" && data ? (
-                <ApproveEventsTable tableData={data} />
+                <ApproveEventsTable
+                    data={data.data ?? []}
+                    page={page}
+                    totalPages={data?.totalPages ?? 1}
+                    onPageChange={setPage}
+                />
             ) : data ? (
-                <ApproveEventsCardView tableData={data} />
+                <ApproveEventsCardView
+                    data={data.data ?? []}
+                    page={page}
+                    totalPages={data?.totalPages ?? 1}
+                    onPageChange={setPage}
+                />
             ) : null}
         </>
     );
