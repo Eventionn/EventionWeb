@@ -1,18 +1,56 @@
+import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import { useUserMyProfile } from "../../api/user";
+import { useUserMyProfile, useEditUser } from "../../api/user";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-
   const { data: user, isPending, isError } = useUserMyProfile();
+  const { mutate: editUserMutation, isPending: isSaving } = useEditUser();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.username,
+        email: user.email,
+        phone: user.phone !== null ? user.phone.toString() : "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSave = () => {
-    console.log("Saving changes...");
-    closeModal();
+    if (!user?.userID) return;
+
+    editUserMutation(
+      {
+        id: user.userID,
+        data: {
+          username: formData.username,
+          email: formData.email,
+          phone: formData.phone,
+          status: true,
+        },
+      },
+      {
+        onSuccess: () => {
+          closeModal();
+        },
+      }
+    );
   };
 
   if (isPending || !user) {
@@ -112,17 +150,32 @@ export default function UserInfoCard() {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-2">
                     <Label>Username</Label>
-                    <Input type="text" value={user.username} />
+                    <Input
+                      name="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" value={user.email} />
+                    <Input
+                      name="email"
+                      type="text"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                    <Input type="text" value={user.phone || ""} />
+                    <Input
+                      name="phone"
+                      type="text"
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -131,8 +184,8 @@ export default function UserInfoCard() {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
