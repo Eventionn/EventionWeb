@@ -10,7 +10,6 @@ import ParticipationChart from "../../components/charts/participationChart";
 import TicketSalesChart from "../../components/charts/ticketSalesChart";
 import { UserInEvent } from "../../types/UserInEvent";
 import { Event } from "../../types/Event";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 
 export default function Overview() {
 
@@ -27,18 +26,10 @@ export default function Overview() {
         <div className="col-span-12 space-y-6 xl:col-span-12">
           <OverallMetrics data={isPending || isError || !data ? null : data} users={isPending || isError || !users ? null : users} />
         </div>
-        <div className="col-span-12 xl:col-span-8">
+        <div className="col-span-12 xl:col-span-12">
           <MonthlyRevenue data={tickets || []} events={data || []} />
         </div>
-        <div className="col-span-12 xl:col-span-4">
-          <MonthlyTarget />
-          {/* <MonthlyTarget
-      averageRevenue={averageRevenue}
-      currentMonthRevenue={currentMonthRevenue}
-      percentToTarget={percentToTarget}
-      todayRevenue={todayRevenue}
-    /> */}
-        </div>
+     
         <div className="col-span-12 xl:col-span-6">
           <TableCard title="Users" path="/users">
             <UsersTable data={users || []} />
