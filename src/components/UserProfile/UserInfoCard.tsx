@@ -1,21 +1,74 @@
+import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import { User } from "../../types/User";
+import { useUserMyProfile, useEditUser } from "../../api/user";
 
-interface UserInfoCardProps {
-  data:User[];
-}
-
-export default function UserInfoCard(data:UserInfoCardProps) {
+export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const { data: user, isPending, isError } = useUserMyProfile();
+  const { mutate: editUserMutation, isPending: isSaving } = useEditUser();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.username,
+        email: user.email,
+        phone: user.phone !== null ? user.phone.toString() : "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleSave = () => {
+    if (!user?.userID) return;
+
+    editUserMutation(
+      {
+        id: user.userID,
+        data: {
+          username: formData.username,
+          email: formData.email,
+          phone: formData.phone,
+          status: true,
+        },
+      },
+      {
+        onSuccess: () => {
+          closeModal();
+        },
+      }
+    );
+  };
+
+  if (isPending || !user) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500 py-10">
+        Failed to load user information.
+      </div>
+    );
+  }
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -30,7 +83,7 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Username
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.data[0].username}
+                {user.username}
               </p>
             </div>
 
@@ -39,7 +92,7 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {data.data[0].email}
+                {user.email}
               </p>
             </div>
 
@@ -48,10 +101,9 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.data[0].phone}
+                {user.phone ? user.phone : "--- --- ---"}
               </p>
             </div>
-
           </div>
         </div>
 
@@ -90,7 +142,6 @@ export default function UserInfoCard(data:UserInfoCardProps) {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2">
-              
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
@@ -99,19 +150,33 @@ export default function UserInfoCard(data:UserInfoCardProps) {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-2">
                     <Label>Username</Label>
-                    <Input type="text" value={data.data[0].username} />
+                    <Input
+                      name="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" value={data.data[0].email} />
+                    <Input
+                      name="email"
+                      type="text"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                    <Input type="text" value={data.data[0].phone} />
+                    <Input
+                      name="phone"
+                      type="text"
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -119,8 +184,8 @@ export default function UserInfoCard(data:UserInfoCardProps) {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
