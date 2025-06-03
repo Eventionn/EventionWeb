@@ -14,22 +14,24 @@ import { Event } from "../../../types/Event";
 import { useApproveEvent, useDeleteEvent } from "../../../api/event";
 
 interface ApproveEventsTableProps {
-    tableData: Event[];
+    data: Event[] | undefined;
+    page: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
 }
 
-export default function ApproveEventsTable({ tableData }: ApproveEventsTableProps) {
+export default function ApproveEventsTable({
+    data,
+    page,
+    totalPages,
+    onPageChange,
+}: ApproveEventsTableProps) {
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
     const eventUrl = import.meta.env.VITE_EVENT_API_URL;
     const isMock = import.meta.env.VITE_MOCKS;
     const approveEventMutation = useApproveEvent();
     const rejectEventMutation = useDeleteEvent();
 
-    const totalPages = Math.ceil(tableData.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = tableData.slice(startIndex, endIndex);
 
     const toggleDropdown = (id: string) => {
         setOpenDropdownId((prev) => (prev === id ? null : id));
@@ -61,11 +63,12 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
         setOpenDropdownId(null);
     };
 
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
+    const handlePageClick = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            onPageChange(newPage);
         }
     };
+
 
     return (
         <div className="overflow-hidden mt-5 rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -81,7 +84,7 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                     </TableHeader>
 
                     <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                        {paginatedData.map((event) => (
+                        {data!.map((event) => (
                             <TableRow key={event.eventID}>
                                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                                     <div className="flex items-center gap-3">
@@ -145,28 +148,27 @@ export default function ApproveEventsTable({ tableData }: ApproveEventsTableProp
                 </Table>
             </div>
 
-            {/* Paginação */}
-            <div className="flex items-center justify-center gap-2 py-4">
+            <div className="flex justify-center items-center gap-2 py-4">
                 <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+                    disabled={page === 1}
+                    onClick={() => handlePageClick(page - 1)}
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
                 >
                     Back
                 </button>
                 {Array.from({ length: totalPages }, (_, i) => (
                     <button
                         key={i}
-                        onClick={() => handlePageChange(i + 1)}
-                        className={`px-3 py-1 rounded-md text-sm border ${currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""} text-theme-sm dark:text-gray-400`}
+                        onClick={() => handlePageClick(i + 1)}
+                        className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""}`}
                     >
                         {i + 1}
                     </button>
                 ))}
                 <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+                    disabled={page === totalPages}
+                    onClick={() => handlePageClick(page + 1)}
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
                 >
                     Next
                 </button>

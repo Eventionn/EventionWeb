@@ -11,6 +11,14 @@ export interface EditEventData {
     endAt: string;
 }
 
+interface PaginatedEventResponse {
+    data: Event[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
 const getEvents = async () => (await api.get('/event/api/events')).data;
 const getSuspendedEvents = async () => (await api.get('/event/api/events/suspended')).data;
 const getEventById = async (id: string) => (await api.get(`/event/api/events/${id}`)).data;
@@ -21,6 +29,28 @@ const editEvent = async (id: string, data: EditEventData): Promise<Event> => {
 };
 const deleteEvent = async (id: string) => (await api.delete(`/event/api/events/${id}`)).data;
 const createEvent = async (data: Event) => (await api.post('/event/api/events', data)).data;
+const getPaginatedEvents = async (
+    page: number,
+    limit: number,
+    status?: string,
+    search?: string
+): Promise<PaginatedEventResponse> => {
+    const params = new URLSearchParams();
+
+    if (status) {
+        params.append('status', status);
+    }
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+    if (search) {
+        params.append('search', search);
+    }
+
+    const response = await api.get(`/event/api/eventsPaginated?${params.toString()}`);
+    return response.data;
+};
+
+
 
 export function useEvents(): UseQueryResult<Event[]> | { data: Event[]; isPending: false; isError: false } {
     const isMock = import.meta.env.VITE_MOCKS === 'true';
@@ -157,3 +187,41 @@ export function useCreateEvent(): UseMutationResult<Event, Error, Event> {
 
     return mutation;
 }
+
+export function usePaginatedEvents(
+    status: string,
+    page: number,
+    limit: number,
+    search?: string
+): UseQueryResult<PaginatedEventResponse, Error> {
+    const isMock = import.meta.env.VITE_MOCKS === 'true';
+
+    return useQuery<PaginatedEventResponse, Error, PaginatedEventResponse>({
+        queryKey: ['paginatedEvents', status, page, limit, search],
+        queryFn: () => {
+            if (isMock) {
+                const filtered = search
+                    ? eventMocks.filter((event) =>
+                        event.name.toLowerCase().includes(search.toLowerCase())
+                    )
+                    : eventMocks;
+
+                const start = (page - 1) * limit;
+                const end = start + limit;
+                const paginated = filtered.slice(start, end);
+
+                return Promise.resolve({
+                    data: paginated,
+                    total: filtered.length,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(filtered.length / limit),
+                });
+            }
+
+            return getPaginatedEvents(page, limit, status, search);
+        },
+    });
+}
+
+

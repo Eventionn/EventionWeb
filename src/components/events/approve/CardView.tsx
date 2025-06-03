@@ -1,27 +1,27 @@
-import { useState } from "react";
 import { Event } from "../../../types/Event";
 import { useApproveEvent, useDeleteEvent } from "../../../api/event";
 
 interface ApproveEventsTableProps {
-    tableData: Event[];
+    data: Event[] | undefined;
+    page: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
 }
 
-export default function ApproveEventsCardView({ tableData }: ApproveEventsTableProps) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
+export default function ApproveEventsTable({
+    data,
+    page,
+    totalPages,
+    onPageChange,
+}: ApproveEventsTableProps) {
     const approveEventMutation = useApproveEvent();
     const rejectEventMutation = useDeleteEvent();
     const eventUrl = import.meta.env.VITE_EVENT_API_URL;
     const isMock = import.meta.env.VITE_MOCKS;
 
-    const totalPages = Math.ceil(tableData.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = tableData.slice(startIndex, endIndex);
-
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
+    const handlePageClick = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            onPageChange(newPage);
         }
     };
 
@@ -36,7 +36,7 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedData.map((event) => (
+                {data!.map((event) => (
                     <div
                         key={event.eventID}
                         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl shadow overflow-hidden flex flex-col h-full"
@@ -80,27 +80,27 @@ export default function ApproveEventsCardView({ tableData }: ApproveEventsTableP
                 ))}
             </div>
 
-            <div className="flex items-center justify-center gap-2 py-4">
+            <div className="flex justify-center items-center gap-2 py-4">
                 <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+                    disabled={page === 1}
+                    onClick={() => handlePageClick(page - 1)}
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
                 >
                     Back
                 </button>
                 {Array.from({ length: totalPages }, (_, i) => (
                     <button
                         key={i}
-                        onClick={() => handlePageChange(i + 1)}
-                        className={`px-3 py-1 rounded-md text-sm border ${currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""} text-theme-sm dark:text-gray-400`}
+                        onClick={() => handlePageClick(i + 1)}
+                        className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""}`}
                     >
                         {i + 1}
                     </button>
                 ))}
                 <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+                    disabled={page === totalPages}
+                    onClick={() => handlePageClick(page + 1)}
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
                 >
                     Next
                 </button>
