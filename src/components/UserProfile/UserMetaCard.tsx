@@ -1,32 +1,16 @@
-import { User } from "../../types/User";
-import { getUserFromToken } from "../../utils/getUserFromToken";
+import { useUserMyProfile } from "../../api/user";
 
-interface UserMetaProps {
-  data: User[];
-}
+export default function UserMetaCard() {
+  const { data: user, isPending } = useUserMyProfile();
 
-export default function UserMetaCard({ data }: UserMetaProps) {
-  const isUsingMocks = import.meta.env.VITE_MOCKS === "true";
-
-  const user = isUsingMocks
-    ? data[0]
-    : (() => {
-        const decoded = getUserFromToken();
-        if (!decoded) return null;
-        return {
-          username: decoded.username,
-          profilePicture: "", // imagem default
-        };
-      })();
-
-  if (!user) {
+  if (!user || isPending) {
     return (
       <div className="flex items-center justify-center py-10">
         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
-  
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">

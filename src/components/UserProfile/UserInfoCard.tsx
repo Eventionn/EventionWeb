@@ -3,40 +3,30 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import { User } from "../../types/User";
-import { getUserFromToken } from "../../utils/getUserFromToken";
+import { useUserMyProfile } from "../../api/user";
 
-interface UserInfoCardProps {
-  data: User[];
-}
-
-export default function UserInfoCard({ data }: UserInfoCardProps) {
+export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
 
-  const isUsingMocks = import.meta.env.VITE_MOCKS === "true";
-
-  const user = isUsingMocks
-    ? data[0]
-    : (() => {
-        const decoded = getUserFromToken();
-        if (!decoded) return null;
-        return {
-          id: decoded.id,
-          email: decoded.email,
-          username: decoded.username,
-          phone: decoded.phone || "",
-        };
-      })();
+  const { data: user, isPending, isError } = useUserMyProfile();
 
   const handleSave = () => {
     console.log("Saving changes...");
     closeModal();
   };
 
-  if (!user) {
+  if (isPending || !user) {
     return (
       <div className="flex items-center justify-center py-10">
         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500 py-10">
+        Failed to load user information.
       </div>
     );
   }
@@ -132,7 +122,7 @@ export default function UserInfoCard({ data }: UserInfoCardProps) {
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                    <Input type="text" value={user.phone} />
+                    <Input type="text" value={user.phone || ""} />
                   </div>
                 </div>
               </div>
