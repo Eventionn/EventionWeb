@@ -170,23 +170,27 @@ export default function ApproveEventsTable({
                 <button
                     disabled={page === 1}
                     onClick={() => handlePageClick(page - 1)}
-                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
                 >
                     Back
                 </button>
+
                 {Array.from({ length: totalPages }, (_, i) => (
                     <button
                         key={i}
                         onClick={() => handlePageClick(i + 1)}
-                        className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""}`}
+                        className={`px-3 py-1 text-sm border rounded transition-colors ${page === i + 1
+                                ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+                                : "text-gray-800 dark:text-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     >
                         {i + 1}
                     </button>
                 ))}
+
                 <button
                     disabled={page === totalPages}
                     onClick={() => handlePageClick(page + 1)}
-                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
                 >
                     Next
                 </button>

@@ -1,6 +1,7 @@
 import { Event } from "../../../types/Event";
 import { useApproveEvent, useDeleteEvent } from "../../../api/event";
 import { toast } from "sonner";
+import { Link } from "react-router";
 
 interface ApproveEventsTableProps {
     data: Event[] | undefined;
@@ -59,13 +60,21 @@ export default function ApproveEventsTable({
                         key={event.eventID}
                         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl shadow overflow-hidden flex flex-col h-full"
                     >
-                        <div className="w-full h-35 overflow-hidden">
-                            <img
-                                src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
-                                alt={event.name}
-                                className="object-cover w-full h-full"
-                            />
-                        </div>
+                        <Link to={`/approve/${event.eventID}`}>
+                            <div className="relative w-full h-35 overflow-hidden cursor-pointer group rounded-lg">
+                                <img
+                                    src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
+                                    alt={event.name}
+                                    className="object-cover w-full h-full transition duration-300 group-hover:blur-[2.5px] group-hover:scale-[1.02]"
+                                />
+
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    <span className="bg-white bg-opacity-90 dark:bg-gray-800 dark:bg-opacity-90 text-gray-900 dark:text-gray-100 rounded-full px-4 py-2 font-semibold text-sm shadow-lg select-none">
+                                        See more
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
 
                         <div className="p-4 flex flex-col justify-between flex-1 h-full">
                             <div className="text-start flex-1">
@@ -102,27 +111,32 @@ export default function ApproveEventsTable({
                 <button
                     disabled={page === 1}
                     onClick={() => handlePageClick(page - 1)}
-                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
                 >
                     Back
                 </button>
+
                 {Array.from({ length: totalPages }, (_, i) => (
                     <button
                         key={i}
                         onClick={() => handlePageClick(i + 1)}
-                        className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""}`}
+                        className={`px-3 py-1 text-sm border rounded transition-colors ${page === i + 1
+                            ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+                            : "text-gray-800 dark:text-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     >
                         {i + 1}
                     </button>
                 ))}
+
                 <button
                     disabled={page === totalPages}
                     onClick={() => handlePageClick(page + 1)}
-                    className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                    className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
                 >
                     Next
                 </button>
             </div>
+
         </div>
     );
 }

@@ -2,6 +2,8 @@ import { useUserMyProfile } from "../../api/user";
 
 export default function UserMetaCard() {
   const { data: user, isPending } = useUserMyProfile();
+  const userUrl = import.meta.env.VITE_USER_API_URL;
+  const isMock = import.meta.env.VITE_MOCKS;
 
   if (!user || isPending) {
     return (
@@ -17,10 +19,7 @@ export default function UserMetaCard() {
         <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
           <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
             <img
-              src={
-                user.profilePicture ||
-                "https://via.placeholder.com/150?text=Sem+Imagem"
-              }
+              src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
               alt="user"
               className="w-full h-full object-cover"
             />
@@ -31,9 +30,8 @@ export default function UserMetaCard() {
             </h4>
             <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Admin
+                {user.email}
               </p>
-              <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
             </div>
           </div>
         </div>
