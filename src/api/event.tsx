@@ -197,7 +197,7 @@ export function usePaginatedEvents(
     const isMock = import.meta.env.VITE_MOCKS === 'true';
 
     return useQuery<PaginatedEventResponse, Error, PaginatedEventResponse>({
-        queryKey: ['paginatedEvents', status, page, limit, search],
+        queryKey: ['events', status, page, limit, search],
         queryFn: () => {
             if (isMock) {
                 const filtered = search

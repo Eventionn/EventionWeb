@@ -18,6 +18,7 @@ import Button from "../../ui/button/Button";
 import { Event } from "../../../types/Event";
 import Badge from "../../ui/badge/Badge";
 import { EditEventData, useDeleteEvent, useEditEvent } from "../../../api/event";
+import { toast } from 'sonner'
 
 interface EventsTableProps {
     data: Event[] | undefined;
@@ -113,18 +114,25 @@ export default function EventsTable({
                 onSuccess: () => {
                     closeDeleteModal();
                     setEventToDelete(null);
+                    toast.success('Event deleted successfully!');
                 },
-                onError: (err) => {
-                    console.log("Erro ao apagar evento:", err);
+                onError: () => {
+                    toast.error('Failed to delete the event.');
                 },
             });
         }
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (eventToDelete) {
-            editEvent({ id: eventToDelete.eventID, data: formData });
-            closeModal();
+            try {
+                editEvent({ id: eventToDelete.eventID, data: formData });
+                toast.success('Event updated successfully!');
+                closeModal();
+            } catch (error) {
+                toast.error('Failed to update the event.');
+                console.error(error);
+            }
         }
     };
 
@@ -219,7 +227,7 @@ export default function EventsTable({
                                     <Dropdown
                                         isOpen={openDropdownId === event.eventID}
                                         onClose={closeDropdown}
-                                        className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
+                                        className="fixed top-[XXpx] left-[YYpx] z-50 w-40 p-2"
                                     >
                                         <DropdownItem
                                             onItemClick={() => handleEditClick(event)}

@@ -1,5 +1,6 @@
 import { Event } from "../../../types/Event";
 import { useApproveEvent, useDeleteEvent } from "../../../api/event";
+import { toast } from "sonner";
 
 interface ApproveEventsTableProps {
     data: Event[] | undefined;
@@ -26,11 +27,28 @@ export default function ApproveEventsTable({
     };
 
     const handleApprove = (eventId: string) => {
-        approveEventMutation.mutate({ id: eventId });
+        approveEventMutation.mutate(
+            { id: eventId },
+            {
+                onSuccess: () => {
+                    toast.success('Evento aprovado com sucesso!');
+                },
+                onError: () => {
+                    toast.error('Erro ao aprovar o evento.');
+                },
+            }
+        );
     };
 
     const handleReject = (eventId: string) => {
-        rejectEventMutation.mutate(eventId);
+        rejectEventMutation.mutate(eventId, {
+            onSuccess: () => {
+                toast.success('Evento rejeitado com sucesso!');
+            },
+            onError: () => {
+                toast.error('Erro ao rejeitar o evento.');
+            },
+        });
     };
 
     return (

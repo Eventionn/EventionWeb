@@ -12,6 +12,7 @@ import { Dropdown } from "../../ui/dropdown/Dropdown";
 import { DropdownItem } from "../../ui/dropdown/DropdownItem";
 import { Event } from "../../../types/Event";
 import { useApproveEvent, useDeleteEvent } from "../../../api/event";
+import { toast } from 'sonner'
 
 interface ApproveEventsTableProps {
     data: Event[] | undefined;
@@ -50,14 +51,31 @@ export default function ApproveEventsTable({
     }
 
     const handleApprove = (eventId: string) => {
-        approveEventMutation.mutate({ id: eventId });
+        approveEventMutation.mutate(
+            { id: eventId },
+            {
+                onSuccess: () => {
+                    toast.success('Event approved successfully!');
+                },
+                onError: () => {
+                    toast.error('Failed to approve the event.');
+                },
+            }
+        );
         setOpenDropdownId(null);
-    }
+    };
 
     const handleReject = (eventId: string) => {
-        rejectEventMutation.mutate(eventId);
+        rejectEventMutation.mutate(eventId, {
+            onSuccess: () => {
+                toast.success('Event rejected successfully!');
+            },
+            onError: () => {
+                toast.error('Failed to reject the event.');
+            },
+        });
         setOpenDropdownId(null);
-    }
+    };
 
     const closeDropdown = () => {
         setOpenDropdownId(null);
@@ -113,7 +131,6 @@ export default function ApproveEventsTable({
                                     {formatDate(event.endAt)}
                                 </TableCell>
 
-
                                 <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                     {event.price > 0 ? event.price + ' €' : 'Free'}
                                 </TableCell>
@@ -126,8 +143,9 @@ export default function ApproveEventsTable({
                                     <Dropdown
                                         isOpen={openDropdownId === event.eventID}
                                         onClose={closeDropdown}
-                                        className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
+                                        className="fixed top-[XXpx] left-[YYpx] z-50 w-40 p-2"
                                     >
+
                                         <DropdownItem
                                             onItemClick={() => handleApprove(event.eventID)}
                                             className="px-3 py-2 rounded-md hover:bg-green-100 dark:hover:bg-green-700 text-green-600 dark:text-green-400"
