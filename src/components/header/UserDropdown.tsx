@@ -24,7 +24,6 @@ export default function UserDropdown(data:User) {
   };
 
   const userUrl = import.meta.env.VITE_USER_API_URL;
-console.log(`${userUrl}${data.profilePicture}`)
 
   return (
     <div className="relative">
