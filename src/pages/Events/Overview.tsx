@@ -15,10 +15,6 @@ export default function EventsOverview() {
     const { data, isPending, isError } = usePaginatedEvents('approved', page, limit, debouncedSearch);
     const { data: tickets, isPending: isTicketsPending, isError: isTicketsError } = useUserInEvents();
 
-    const filteredData = data?.data.filter(event =>
-        event.name.toLowerCase().includes(debouncedSearch.toLowerCase())
-    );
-
     if (isError || isTicketsError) {
         return (
             <div className="flex flex-col items-center justify-center h-[200px] space-y-4">
@@ -82,13 +78,13 @@ export default function EventsOverview() {
                 )}
             </div>
 
-            {data && filteredData && filteredData.length === 0 ? (
+            {data && data.data.length === 0 ? (
                 <div className="text-center text-gray-600 dark:text-gray-400 mt-10">
                     No events to show up.
                 </div>
             ) : (
                 <EventsTable
-                    data={filteredData ?? []}
+                    data={data?.data ?? []}
                     page={page}
                     totalPages={data?.totalPages ?? 1}
                     onPageChange={setPage}
