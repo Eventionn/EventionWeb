@@ -84,7 +84,7 @@ export default function EventsOverview() {
 
             {data && filteredData && filteredData.length === 0 ? (
                 <div className="text-center text-gray-600 dark:text-gray-400 mt-10">
-                    Não há eventos para mostrar.
+                    No events to show up.
                 </div>
             ) : (
                 <EventsTable

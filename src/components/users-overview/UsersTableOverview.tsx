@@ -17,12 +17,16 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Button from "../ui/button/Button";
 import { useEditUser, useDeleteUser, EditUserData } from "../../api/user";
+import { toast } from 'sonner'
 
 interface UsersTableOverviewProps {
   data: User[];
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
+export default function UsersTableOverview({ data, page, totalPages, onPageChange }: UsersTableOverviewProps) {
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [usertoEdit, setUserToEdit] = useState<User | null>(null);
   const [formData, setFormData] = useState<EditUserData>({
@@ -34,11 +38,6 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
 
   const { mutate: editUser } = useEditUser();
   const { mutate: deleteUser } = useDeleteUser();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
   const userUrl = import.meta.env.VITE_USER_API_URL;
   const isMock = import.meta.env.VITE_MOCKS;
 
@@ -104,6 +103,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
           status: formData.status,
         },
       });
+      toast.success('User updated successfully!');
       closeEditModal();
       setUserToEdit(null);
     }
@@ -115,17 +115,18 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
         onSuccess: () => {
           closeDeleteModal();
           setUserToDelete(null);
+          toast.success('User deleted successfully!');
         },
-        onError: (err) => {
-          console.log("Erro ao apagar utilizador:", err);
+        onError: () => {
+          toast.error('Failed to delete the user.');
         },
       });
     }
   };
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+  const handlePageClick = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      onPageChange(newPage);
     }
   };
 
@@ -151,7 +152,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {paginatedData.map((user) => (
+            {data.map((user) => (
               <TableRow key={user.userID}>
                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                   <div className="flex items-center gap-3">
@@ -180,7 +181,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
                 <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
                   {user.phone}
                 </TableCell>
-                
+
                 <TableCell className="px-4 py-3 text-theme-sm text-start text-gray-500 dark:text-gray-400">
                   <Badge size="sm" color={user.status ? "success" : "error"}>
                     {user.status ? "Active" : "Inactive"}
@@ -193,7 +194,7 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
                   <Dropdown
                     isOpen={openDropdownId === user.userID}
                     onClose={closeDropdown}
-                    className="absolute right-full top-0 mr-2 z-10 w-40 p-2"
+                    className="fixed top-[XXpx] left-[YYpx] z-50 w-40 p-2"
                   >
                     <DropdownItem
                       onItemClick={() => handleEditClick(user)}
@@ -215,29 +216,31 @@ export default function UsersTableOverview({ data }: UsersTableOverviewProps) {
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 py-4">
+      <div className="flex justify-center items-center gap-2 py-4">
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+          disabled={page === 1}
+          onClick={() => handlePageClick(page - 1)}
+          className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
         >
           Back
         </button>
+
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}
-            onClick={() => handlePageChange(i + 1)}
-            className={`px-3 py-1 rounded-md text-sm border ${currentPage === i + 1 ? "bg-gray-200 dark:bg-gray-700" : ""
-              } text-theme-sm dark:text-gray-400`}
+            onClick={() => handlePageClick(i + 1)}
+            className={`px-3 py-1 text-sm border rounded transition-colors ${page === i + 1
+              ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+              : "text-gray-800 dark:text-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
           >
             {i + 1}
           </button>
         ))}
+
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-md text-sm border disabled:opacity-50 text-theme-sm dark:text-gray-400"
+          disabled={page === totalPages}
+          onClick={() => handlePageClick(page + 1)}
+          className="px-3 py-1 text-sm border rounded disabled:opacity-50 text-gray-800 dark:text-gray-200 dark:border-white/10"
         >
           Next
         </button>
