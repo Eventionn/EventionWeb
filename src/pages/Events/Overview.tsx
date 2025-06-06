@@ -41,7 +41,7 @@ export default function EventsOverview() {
         <>
             {tickets && <TopEventsMetrics data={tickets} />}
 
-            <div className="mb-4 max-w-sm relative">
+            <div className="mt-5 max-w-sm relative">
                 <Input
                     type="text"
                     placeholder="Search events..."

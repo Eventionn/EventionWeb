@@ -130,6 +130,13 @@ export default function UsersTableOverview({ data, page, totalPages, onPageChang
     }
   };
 
+  const getUserImage = (user: User) => {
+    if (isMock === 'true') return user.profilePicture;
+    return user.profilePicture?.startsWith("https")
+      ? user.profilePicture
+      : `${userUrl}${user.profilePicture}`;
+  };
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
       <div className="max-w-full overflow-x-auto">
@@ -157,12 +164,17 @@ export default function UsersTableOverview({ data, page, totalPages, onPageChang
                 <TableCell className="px-5 py-4 sm:px-6 text-start">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
+
                       <img
-                        src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
+                        loading="lazy"
+                        src={getUserImage(user)}
                         alt={user.username}
                         width={40}
                         height={40}
                         className="object-cover object-center w-full h-full"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+                        }}
                       />
                     </div>
                     <div>
@@ -246,7 +258,6 @@ export default function UsersTableOverview({ data, page, totalPages, onPageChang
         </button>
       </div>
 
-      {/* Edit Modal */}
       <Modal isOpen={isEditModalOpen} onClose={closeEditModal} className="max-w-md m-4">
         <div className="rounded-3xl bg-white p-6 dark:bg-gray-900">
           <h4 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">Edit User</h4>
@@ -283,7 +294,6 @@ export default function UsersTableOverview({ data, page, totalPages, onPageChang
         </div>
       </Modal>
 
-      {/* Delete Modal */}
       <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} className="max-w-md m-4">
         <div className="rounded-3xl bg-white p-6 dark:bg-gray-900">
           <h4 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">Confirm User Removal</h4>

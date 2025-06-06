@@ -8,8 +8,9 @@ import { User } from "../../types/User";
 //   data:User;
 // }
 
-export default function UserDropdown(data:User) {
+export default function UserDropdown(data: User) {
   const [isOpen, setIsOpen] = useState(false);
+  const isMock = import.meta.env.VITE_MOCKS;
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -25,6 +26,13 @@ export default function UserDropdown(data:User) {
 
   const userUrl = import.meta.env.VITE_USER_API_URL;
 
+  const getUserImage = (user: User) => {
+    if (isMock === 'true') return user.profilePicture;
+    return user.profilePicture?.startsWith("http")
+      ? user.profilePicture
+      : `${userUrl}${user.profilePicture}`;
+  };
+
   return (
     <div className="relative">
       <button
@@ -32,15 +40,24 @@ export default function UserDropdown(data:User) {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          
-          <img src={`${userUrl}${data.profilePicture}`} alt="User" className="w-full h-full object-cover"/>
+          <img
+            loading="lazy"
+            src={getUserImage(data)}
+            alt={data.username}
+            width={40}
+            height={40}
+            className="object-cover w-full h-full"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+            }}
+          />
+
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">{data.username}</span>
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"

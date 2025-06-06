@@ -87,6 +87,12 @@ export default function ApproveEventsTable({
         }
     };
 
+    const getEventImage = (event: Event) => {
+        if (isMock === 'true') return event.eventPicture;
+        return event.eventPicture?.startsWith("https")
+            ? event.eventPicture
+            : `${eventUrl}${event.eventPicture}`;
+    };
 
     return (
         <div className="overflow-hidden mt-5 rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -108,11 +114,15 @@ export default function ApproveEventsTable({
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 overflow-hidden rounded-full">
                                             <img
-                                                src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
+                                                loading="lazy"
+                                                src={getEventImage(event)}
                                                 alt={event.name}
                                                 width={40}
                                                 height={40}
                                                 className="object-cover object-center w-full h-full"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = "images/event/default_event.jpg";
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -180,8 +190,8 @@ export default function ApproveEventsTable({
                         key={i}
                         onClick={() => handlePageClick(i + 1)}
                         className={`px-3 py-1 text-sm border rounded transition-colors ${page === i + 1
-                                ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
-                                : "text-gray-800 dark:text-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+                            ? "bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+                            : "text-gray-800 dark:text-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     >
                         {i + 1}
                     </button>

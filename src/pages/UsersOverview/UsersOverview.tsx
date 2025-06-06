@@ -8,7 +8,7 @@ import Input from "../../components/form/input/InputField";
 
 export default function UsersOverview() {
     const [page, setPage] = useState(1);
-    const limit = 3;
+    const limit = 10;
     const [search, setSearch] = useState("");
     const [debouncedSearch] = useDebounce(search, 300);
 
