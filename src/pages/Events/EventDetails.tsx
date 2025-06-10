@@ -92,7 +92,7 @@ export default function EventDetails() {
                     <img
                         src={isMock === "true" ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                         alt={event.name}
-                        className="w-full h-full object-cover rounded-t-xl"
+                        className="object-top w-full h-full object-cover rounded-t-xl"
                     />
 
                     <button
