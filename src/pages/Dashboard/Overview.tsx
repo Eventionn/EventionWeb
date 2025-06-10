@@ -29,24 +29,26 @@ export default function Overview() {
         <div className="col-span-12 xl:col-span-12">
           <MonthlyRevenue data={tickets || []} events={data || []} />
         </div>
-     
+
+        <div className="col-span-12 xl:col-span-6">
+
+          <ParticipationChart data={participationData} />
+        </div>
+        <div className="col-span-12 xl:col-span-6">
+          <TicketSalesChart data={ticketSales} />
+        </div>
+
         <div className="col-span-12 xl:col-span-6">
           <TableCard title="Users" path="/users">
             <UsersTable data={users || []} />
           </TableCard>
         </div>
+
         <div className="col-span-12 xl:col-span-6">
+
           <TableCard title="Events" path="/events">
             <EventsTable data={data || []} />
           </TableCard>
-        </div>
-
-        <div className="col-span-12 xl:col-span-6">
-          <ParticipationChart data={participationData} />
-        </div>
-
-        <div className="col-span-12 xl:col-span-6">
-          <TicketSalesChart data={ticketSales} />
         </div>
 
       </div>

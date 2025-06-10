@@ -14,7 +14,7 @@ export const userInEventMocks: UserInEvent[] = [
         event_id: "ev-002",
         user_id: "user-002",
         feedback_id: "feedback-002",
-        createdAt: new Date("2025-07-01T10:00:00"),
+        createdAt: new Date("2025-06-01T10:00:00"),
         participated: false,
     },
     {
@@ -38,7 +38,7 @@ export const userInEventMocks: UserInEvent[] = [
         event_id: "ev-004",
         user_id: "user-005",
         feedback_id: undefined,
-        createdAt: new Date("2025-10-01T10:00:00"),
+        createdAt: new Date("2025-09-01T10:00:00"),
         participated: true,
     },
     {
@@ -54,7 +54,7 @@ export const userInEventMocks: UserInEvent[] = [
         event_id: "ev-007",
         user_id: "user-007",
         feedback_id: undefined,
-        createdAt: new Date("2025-12-01T10:00:00"),
+        createdAt: new Date("2025-11-01T10:00:00"),
         participated: true,
     },
     {
@@ -62,7 +62,7 @@ export const userInEventMocks: UserInEvent[] = [
         event_id: "ev-007",
         user_id: "user-008",
         feedback_id: undefined,
-        createdAt: new Date("2025-01-01T10:00:00"),
+        createdAt: new Date("2025-11-01T10:00:00"),
         participated: false,
     },
     {
