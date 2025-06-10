@@ -88,11 +88,11 @@ export default function EventDetails() {
     return (
         <div className="max-w-5xl mx-auto">
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow overflow-hidden">
-                <div className="relative w-full h-64">
+                <div className="relative w-full h-90">
                     <img
                         src={isMock === "true" ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                         alt={event.name}
-                        className="object-top w-full h-full object-cover rounded-t-xl"
+                        className="w-full h-full object-cover rounded-t-xl"
                     />
 
                     <button

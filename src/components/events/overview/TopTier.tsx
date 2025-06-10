@@ -25,7 +25,8 @@ export default function TopTier({
 }: TopTierProps) {
   const { data: event, isPending } = useEventById(eventID);
   const { data: users } = useUsers();
-  const userUrl = import.meta.env.VITE_USER_API_URL;
+  const eventUrl = import.meta.env.VITE_EVENT_API_URL;
+  const userUrl = import.meta.env.VITE_USER_API_URL
   const isMock = import.meta.env.VITE_MOCKS;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,7 +68,7 @@ export default function TopTier({
       >
         <div className="relative flex-shrink-0">
           <img
-            src={isMock === "true" ? event.eventPicture : `${userUrl}${event.eventPicture}`}
+            src={isMock === "true" ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
             alt={event.name}
             className="w-16 h-16 object-cover rounded-xl border-2 border-gray-300"
           />
@@ -87,7 +88,7 @@ export default function TopTier({
             {event.name}
           </h4>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {participantCount} participante{participantCount !== 1 ? "s" : ""}
+            {participantCount} participant{participantCount !== 1 ? "s" : ""}
           </p>
         </div>
       </div>
@@ -101,7 +102,7 @@ export default function TopTier({
       >
         <div className="max-h-[80vh] overflow-y-auto">
           <h2 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100 break-words">
-            Participantes de &quot;{event.name}&quot;
+            Participants of &quot;{event.name}&quot;
           </h2>
 
           {resolvedUsers && resolvedUsers.length > 0 ? (
@@ -132,14 +133,14 @@ export default function TopTier({
               ))}
             </ul>
           ) : (
-            <p className="text-gray-600 dark:text-gray-300">Sem participantes.</p>
+            <p className="text-gray-600 dark:text-gray-300">No participants.</p>
           )}
 
           <button
             onClick={closeModal}
             className="mt-5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 rounded w-full"
           >
-            Fechar
+            Close
           </button>
         </div>
       </Modal>

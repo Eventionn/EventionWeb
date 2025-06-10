@@ -8,7 +8,7 @@ import { useDebounce } from "use-debounce";
 
 export default function EventsOverview() {
     const [page, setPage] = useState(1);
-    const limit = 10;
+    const limit = 7;
     const [search, setSearch] = useState("");
     const [debouncedSearch] = useDebounce(search, 300);
 

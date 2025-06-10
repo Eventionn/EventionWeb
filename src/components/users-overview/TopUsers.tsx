@@ -112,7 +112,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                     : `${userUrl}${user.profilePicture}`
                 }
                 alt={user.username || "Organizador"}
-                className={`rounded-full border-4 ${style.color} ${imageSizes[index]} object-cover`}
+                className={`rounded-full border-4 ${style.color} ${imageSizes[index]} object-cover aspect-square`}
               />
               <div className="mt-3 text-center min-w-0">
                 <div className={`font-bold text-lg ${style.color}`}>
@@ -144,7 +144,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
             className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100 truncate max-w-full overflow-hidden whitespace-nowrap"
             title={`Eventos organizados por ${selectedUser?.username}`}
           >
-            Eventos organizados por {selectedUser?.username}
+            Events organized by {selectedUser?.username}
           </h2>
 
           <ul className="space-y-3">
@@ -167,7 +167,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                         {new Date(event.startAt).toLocaleDateString("pt-PT")}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Preço:{" "}
+                        Price:{" "}
                         {event.price.toLocaleString("pt-PT", {
                           style: "currency",
                           currency: "EUR",
@@ -175,7 +175,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                       </div>
                     </div>
 
-                    {ticketCount > 1 ?
+                    {ticketCount > 0 ?
                       <div className="flex items-center gap-1">
                         <span className="text-xl">🎫</span>
                         <span className="font-bold text-lg text-gray-800 dark:text-gray-100">
@@ -188,7 +188,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                 );
               })
             ) : (
-              <p className="text-gray-600 dark:text-gray-300">Sem eventos</p>
+              <p className="text-gray-600 dark:text-gray-300">No events</p>
             )}
           </ul>
 
@@ -196,7 +196,7 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
             onClick={closeModal}
             className="mt-5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 rounded w-full"
           >
-            Fechar
+            Close
           </button>
         </div>
       </Modal>

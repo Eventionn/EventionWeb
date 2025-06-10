@@ -32,10 +32,10 @@ export default function ApproveEventsTable({
             { id: eventId },
             {
                 onSuccess: () => {
-                    toast.success('Evento aprovado com sucesso!');
+                    toast.success('Event approved successfully!');
                 },
                 onError: () => {
-                    toast.error('Erro ao aprovar o evento.');
+                    toast.error('Failed to approve the event.');
                 },
             }
         );
@@ -44,10 +44,10 @@ export default function ApproveEventsTable({
     const handleReject = (eventId: string) => {
         rejectEventMutation.mutate(eventId, {
             onSuccess: () => {
-                toast.success('Evento rejeitado com sucesso!');
+                toast.success('Event rejected successfully!');
             },
             onError: () => {
-                toast.error('Erro ao rejeitar o evento.');
+                toast.error('Failed to reject the event.');
             },
         });
     };
@@ -65,7 +65,7 @@ export default function ApproveEventsTable({
                                 <img
                                     src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                                     alt={event.name}
-                                    className="object-cover object-top w-full h-full transition duration-300 group-hover:blur-[2.5px] group-hover:scale-[1.02]"
+                                    className="object-cover w-full h-full transition duration-300 group-hover:blur-[2.5px] group-hover:scale-[1.02]"
                                 />
 
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
