@@ -120,6 +120,9 @@ export default function TopTier({
                     }
                     alt={user.username}
                     className="w-10 h-10 rounded-full object-cover border border-gray-300"
+                                    onError={(e) => {
+                          (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+                        }}
                   />
                   <div>
                     <div className="font-semibold text-gray-800 dark:text-gray-100">

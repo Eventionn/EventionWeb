@@ -113,6 +113,9 @@ export default function TopOrganizersMetrics({ data }: TopOrganizersProps) {
                 }
                 alt={user.username || "Organizador"}
                 className={`rounded-full border-4 ${style.color} ${imageSizes[index]} object-cover aspect-square`}
+                onError={(e) => {
+                          (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+                        }}
               />
               <div className="mt-3 text-center min-w-0">
                 <div className={`font-bold text-lg ${style.color}`}>
