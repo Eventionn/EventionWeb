@@ -14,8 +14,8 @@ import { Event } from "../../types/Event";
 export default function Overview() {
 
   const { data, isPending, isError } = useEvents();
-  const { data: users, isPending: isPendingUsers, isError: isErrorUsers } = useUsers();
-  const { data: tickets, isPending: isPendingTickets, isError: isErrorTickets } = useUserInEvents();
+  const { data: users } = useUsers();
+  const { data: tickets } = useUserInEvents();
 
   const participationData = getParticipationData(tickets ?? null, data ?? null);
   const ticketSales = getTicketSalesOverTime(tickets ?? null);
