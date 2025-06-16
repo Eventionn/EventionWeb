@@ -53,7 +53,7 @@ export default function UsersTable({ data }: UsersTableProps) {
                         height={60}
                         src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
                         alt={user.username}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain object-cover object-center"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
                         }}
