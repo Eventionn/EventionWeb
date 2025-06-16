@@ -66,6 +66,9 @@ export default function ApproveEventsTable({
                                     src={isMock === 'true' ? event.eventPicture : `${eventUrl}${event.eventPicture}`}
                                     alt={event.name}
                                     className="object-cover w-full h-full transition duration-300 group-hover:blur-[2.5px] group-hover:scale-[1.02]"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = "images/event/default_event.jpg";
+                                    }}
                                 />
 
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
