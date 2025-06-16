@@ -13,7 +13,7 @@ interface UsersTableProps {
   data: User[];
 }
 
-export default function UsersTable( { data }: UsersTableProps) {
+export default function UsersTable({ data }: UsersTableProps) {
 
   const datafiltered = data.filter(user => user.status == true).slice(0, 5);
   const userUrl = import.meta.env.VITE_USER_API_URL;
@@ -53,7 +53,10 @@ export default function UsersTable( { data }: UsersTableProps) {
                         height={60}
                         src={isMock === 'true' ? user.profilePicture : `${userUrl}${user.profilePicture}`}
                         alt={user.username}
-                       className="w-full h-full object-contain"
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+                        }}
                       />
                     </div>
                     <div>
@@ -77,7 +80,7 @@ export default function UsersTable( { data }: UsersTableProps) {
                         : "error"
                     }
                   >
-                    {user.status? "Active" : "Inactive"}
+                    {user.status ? "Active" : "Inactive"}
                   </Badge>
                 </TableCell>
               </TableRow>

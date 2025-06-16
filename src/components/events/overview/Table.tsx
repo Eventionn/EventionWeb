@@ -57,8 +57,8 @@ export default function EventsTable({
         price: 0,
     });
 
-    const handleDeleteClick = (order: Event) => {
-        setEventToDelete(order);
+    const handleDeleteClick = (event: Event) => {
+        setEventToDelete(event);
         openDeleteModal();
     };
 

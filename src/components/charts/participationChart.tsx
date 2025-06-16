@@ -27,7 +27,7 @@ const ParticipationChart: React.FC<Props> = ({ data }) => {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <h3 className="mb-2 font-semibold">Participation by Event</h3>
+      <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">Participation by Event</h3>
       <Chart options={options} series={series} type="bar" height={350} />
     </div>
   );

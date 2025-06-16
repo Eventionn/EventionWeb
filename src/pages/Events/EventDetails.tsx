@@ -21,10 +21,10 @@ export default function EventDetails() {
             {
                 onSuccess: () => {
                     navigate(-1)
-                    toast.success("Evento aprovado com sucesso!");
+                    toast.success("Event approved successfully!");
                 },
                 onError: () => {
-                    toast.error("Erro ao aprovar o evento.");
+                    toast.error("Error approving the event.");
                 },
             }
         );
@@ -34,10 +34,10 @@ export default function EventDetails() {
         rejectEventMutation.mutate(eventId!, {
             onSuccess: () => {
                 navigate(-1)
-                toast.success("Evento rejeitado com sucesso!");
+                toast.success("Event rejected successfully!");
             },
             onError: () => {
-                toast.error("Erro ao rejeitar o evento.");
+                toast.error("Error rejecting the event.");
             },
         });
     };

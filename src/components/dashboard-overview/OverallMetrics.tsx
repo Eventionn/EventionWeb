@@ -11,7 +11,7 @@ interface OverallMetricsProps {
   users: User[] | null;
 }
 
-export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
+export default function OverallMetrics({ data, users }: OverallMetricsProps) {
 
   const userUrl = import.meta.env.VITE_USER_API_URL;
   const eventUrl = import.meta.env.VITE_EVENT_API_URL;
@@ -43,7 +43,7 @@ export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
-      
+
       <Link to="/users" className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 hover:shadow-lg transition">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
@@ -69,14 +69,17 @@ export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
                   src={isMock === 'true' ? picture : `${userUrl}${picture}`}
                   alt={`Team member ${index + 1}`}
                   className="w-full size-6"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "images/user/default_user.jpg";
+                  }}
                 />
               </div>
             ))}
           </div>
         </div>
-        </Link>
+      </Link>
 
-        <Link to="/events" className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 hover:shadow-lg transition">
+      <Link to="/events" className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 hover:shadow-lg transition">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <CalenderIcon className="text-gray-800 size-6 dark:text-white/90" />
         </div>
@@ -101,14 +104,17 @@ export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
                   src={isMock === 'true' ? picture : `${eventUrl}${picture}`}
                   alt={`Team member ${index + 1}`}
                   className="w-full size-6"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "images/event/default_event.jpg";
+                  }}
                 />
               </div>
             ))}
           </div>
         </div>
-        </Link>
+      </Link>
 
-        <Link to="/approve" className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 hover:shadow-lg transition">
+      <Link to="/approve" className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 hover:shadow-lg transition">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <CalenderIcon className="text-gray-800 size-6 dark:text-white/90" />
         </div>
@@ -138,8 +144,8 @@ export default function   OverallMetrics({ data, users }: OverallMetricsProps) {
             ))}
           </div>
         </div>
-        </Link>
-      
+      </Link>
+
     </div>
   );
 }

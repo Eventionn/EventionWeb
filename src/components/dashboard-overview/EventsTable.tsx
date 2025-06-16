@@ -54,6 +54,9 @@ export default function EventsTable({ data }: EventsTableProps) {
                         width={60}
                         height={60}
                         className="object-cover object-center w-full h-full"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "images/event/default_event.jpg";
+                        }}
                       />
                     </div>
                     <div>
