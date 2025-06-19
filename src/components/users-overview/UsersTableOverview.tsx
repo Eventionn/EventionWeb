@@ -206,8 +206,9 @@ export default function UsersTableOverview({ data, page, totalPages, onPageChang
                   <Dropdown
                     isOpen={openDropdownId === user.userID}
                     onClose={closeDropdown}
-                    className="fixed top-[XXpx] left-[YYpx] z-50 w-40 p-2"
+                    className="absolute right-full top-0 mt-2 mr-2 z-50 w-40 p-2"
                   >
+
                     <DropdownItem
                       onItemClick={() => handleEditClick(user)}
                       className="px-3 py-2 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 text-yellow-600 dark:text-yellow-400"

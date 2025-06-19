@@ -238,7 +238,7 @@ export default function EventsTable({
                                     <Dropdown
                                         isOpen={openDropdownId === event.eventID}
                                         onClose={closeDropdown}
-                                        className="fixed top-[XXpx] left-[YYpx] z-50 w-40 p-2"
+                                        className="absolute right-full top-0 mt-2 mr-2 z-50 w-40 p-2"
                                     >
                                         <DropdownItem
                                             onItemClick={() => handleEditClick(event)}
